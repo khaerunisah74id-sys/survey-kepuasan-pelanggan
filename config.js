@@ -18,7 +18,7 @@ const CONFIG = {
   ADMIN_USERNAME: "admin",
   ADMIN_PASSWORD: "password123",
 
-  // OPSI TAMBAHAN: DAFTAR PETUGAS DEFAULT (MODE DEMO)
+  // OPSI TAMBAHAN: DAFTAR PETUGAS DEFAULT
   // Daftar petugas bawaan yang akan muncul di dropdown halaman survei jika belum menyambungkan ke Supabase.
   DEFAULT_PETUGAS: ["Andi Kasir", "Siti Pramuniaga", "Budi Staff Gudang"]
 };

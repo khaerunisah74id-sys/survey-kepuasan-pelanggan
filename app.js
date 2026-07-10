@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const nextBtn = document.getElementById("nextBtn");
   const prevBtn = document.getElementById("prevBtn");
   const btnSpinner = document.getElementById("btnSpinner");
-  const configWarning = document.getElementById("configWarning");
   const successCard = document.getElementById("successCard");
   const formErrorMsg = document.getElementById("formErrorMsg");
 
@@ -26,17 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Cek konfigurasi Supabase & Web3Forms
   const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
   const isWeb3FormsConfigured = CONFIG.WEB3FORMS_ACCESS_KEY;
-  
-  if (!isSupabaseConfigured && !isWeb3FormsConfigured) {
-    configWarning.style.display = "block";
-    configWarning.innerHTML = `
-      <strong>⚠️ Mode Demo Aktif:</strong><br>
-      Anda belum mengisi kredensial di file <code>config.js</code>. Data survei saat ini disimpan sementara di browser ini (LocalStorage).<br>
-      Buka file <code>config.js</code> untuk menyambungkan ke <strong>Supabase</strong> dan/atau <strong>Web3Forms</strong>.
-    `;
-  } else {
-    configWarning.style.display = "none";
-  }
 
   // Load select petugas
   function loadPetugasSelect() {
