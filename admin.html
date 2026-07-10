@@ -77,8 +77,8 @@
 
     <!-- Tab Navigasi Admin -->
     <div class="admin-tabs">
-      <button class="tab-link active" onclick="switchTab('reportsTab')">Riwayat Survei</button>
-      <button class="tab-link" onclick="switchTab('officersTab')">Kelola Petugas / User</button>
+      <button type="button" class="tab-link active" onclick="switchTab('reportsTab')">Riwayat Survei</button>
+      <button type="button" class="tab-link" onclick="switchTab('officersTab')">Kelola Petugas / User</button>
     </div>
 
     <!-- TAB 1: RIWAYAT LAPORAN & SURVEI -->
@@ -199,32 +199,39 @@
     // Event listener saat halaman dimuat
     document.addEventListener("DOMContentLoaded", function () {
       const loginForm = document.getElementById("loginForm");
-      
-      loginForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        
-        const usernameInput = document.getElementById("usernameInput").value;
-        const passwordInput = document.getElementById("passwordInput").value;
-        const loginError = document.getElementById("loginError");
+      const addOfficerForm = document.getElementById("addOfficerForm");
 
-        // Validasi kecocokan username & password
-        if (usernameInput === CONFIG.ADMIN_USERNAME && passwordInput === CONFIG.ADMIN_PASSWORD) {
-          sessionStorage.setItem("admin_authenticated", "true");
-          document.getElementById("loginCard").style.display = "none";
-          document.getElementById("adminDashboard").style.display = "block";
-          loginError.style.display = "none";
-          loadDashboardData();
-        } else {
-          loginError.style.display = "block";
-          document.getElementById("passwordInput").value = "";
-        }
-      });
+      // Submit form login admin
+      if (loginForm) {
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          
+          const usernameInput = document.getElementById("usernameInput").value;
+          const passwordInput = document.getElementById("passwordInput").value;
+          const loginError = document.getElementById("loginError");
+
+          // Validasi kecocokan username & password
+          if (usernameInput === CONFIG.ADMIN_USERNAME && passwordInput === CONFIG.ADMIN_PASSWORD) {
+            sessionStorage.setItem("admin_authenticated", "true");
+            document.getElementById("loginCard").style.display = "none";
+            document.getElementById("adminDashboard").style.display = "block";
+            loginError.style.display = "none";
+            loadDashboardData();
+            loadOfficersData();
+          } else {
+            loginError.style.display = "block";
+            document.getElementById("passwordInput").value = "";
+          }
+        });
+      }
 
       // Submit form tambah petugas baru
-      addOfficerForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        addOfficer();
-      });
+      if (addOfficerForm) {
+        addOfficerForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          addOfficer();
+        });
+      }
 
       // Jalankan cek akses masuk
       checkAdminAccess();
