@@ -24,6 +24,57 @@ document.addEventListener("DOMContentLoaded", function () {
     configWarning.style.display = "none";
   }
 
+  // Fungsi untuk mengambil dan memasukkan daftar petugas ke dropdown
+  function loadPetugasSelect() {
+    const petugasSelect = document.getElementById("petugasSelect");
+    if (!petugasSelect) return;
+
+    if (isSupabaseConfigured) {
+      // Ambil dari database online Supabase
+      fetch(`${CONFIG.SUPABASE_URL}/rest/v1/petugas?select=*`, {
+        method: "GET",
+        headers: {
+          "apikey": CONFIG.SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Gagal memuat petugas");
+        return res.json();
+      })
+      .then(data => {
+        petugasSelect.innerHTML = '<option value="" disabled selected>-- Pilih Nama Petugas --</option>';
+        data.forEach(p => {
+          const opt = document.createElement("option");
+          opt.value = p.nama;
+          opt.innerText = p.nama;
+          petugasSelect.appendChild(opt);
+        });
+      })
+      .catch(err => {
+        console.error("Gagal mengambil data dari Supabase, memuat default:", err);
+        populateDefaultPetugas();
+      });
+    } else {
+      // Gunakan default dari config.js
+      populateDefaultPetugas();
+    }
+
+    function populateDefaultPetugas() {
+      petugasSelect.innerHTML = '<option value="" disabled selected>-- Pilih Nama Petugas --</option>';
+      const defaultList = CONFIG.DEFAULT_PETUGAS || [];
+      defaultList.forEach(nama => {
+        const opt = document.createElement("option");
+        opt.value = nama;
+        opt.innerText = nama;
+        petugasSelect.appendChild(opt);
+      });
+    }
+  }
+
+  // Panggil pemuatan select petugas
+  loadPetugasSelect();
+
   // Handle Pengiriman Formulir
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -31,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const ratingEl = document.querySelector('input[name="rating"]:checked');
     const kategoriEl = document.querySelector('input[name="kategori"]:checked');
     const saranEl = document.getElementById("saran");
+    const petugasSelect = document.getElementById("petugasSelect");
 
     if (!ratingEl) {
       alert("Silakan pilih tingkat kepuasan Anda.");
@@ -40,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const rating = ratingEl.value;
     const kategori = kategoriEl ? kategoriEl.value : "Tidak Memilih";
     const saran = saranEl ? saranEl.value : "";
+    const petugas = petugasSelect ? petugasSelect.value : "Umum";
 
     // Aktifkan Loading State
     submitBtn.disabled = true;
@@ -60,7 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({
           rating: rating,
           kategori: kategori,
-          saran: saran
+          saran: saran,
+          petugas: petugas
         })
       }).then(res => {
         if (!res.ok) throw new Error("Gagal mengirim ke database Supabase");
@@ -82,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
           subject: `Survei Baru: ${rating} (${kategori})`,
           from_name: "Sistem Survei Toko",
           message: `Ada masukan baru dari pelanggan!\n\n` +
+                   `- Petugas Pelayanan: ${petugas}\n` +
                    `- Tingkat Kepuasan: ${rating}\n` +
                    `- Kategori Terkesan: ${kategori}\n` +
                    `- Komentar/Saran: ${saran || "(Kosong)"}\n\n` +
@@ -115,7 +170,8 @@ document.addEventListener("DOMContentLoaded", function () {
           tanggal: new Date().toLocaleString("id-ID"),
           rating: rating,
           kategori: kategori,
-          saran: saran
+          saran: saran,
+          petugas: petugas
         });
 
         localStorage.setItem("demo_survey_responses", JSON.stringify(responses));
