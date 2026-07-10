@@ -81,13 +81,11 @@ body {
   align-items: center;
   margin-bottom: 16px;
 }
-.hyundai-logo-text {
-  font-family: var(--font-head);
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--primary);
-  text-transform: uppercase;
+.hyundai-logo-img {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 .survey-header h1 {
   font-family: var(--font-head);
