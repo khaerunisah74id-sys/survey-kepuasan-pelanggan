@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <meta name="description" content="Survei Kepuasan Pelanggan - Bantu kami tingkatkan layanan dengan mengisi survei singkat">
+  <meta name="description" content="PT Hyundai - Survei Kepuasan Pelanggan. Masukan Anda membantu meningkatkan pelayanan kami.">
   <meta name="robots" content="noindex, nofollow">
-  <!-- Preconnect untuk performa loading font lebih cepat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <title>Survei Kepuasan Pelanggan</title>
+  <title>PT HYUNDAI - Survei Kepuasan Pelanggan</title>
   <link rel="stylesheet" href="style.css">
   <script src="config.js"></script>
 </head>
@@ -17,176 +16,467 @@
   <!-- MODAL KEBIJAKAN PRIVASI (UU PDP No.27/2022) -->
   <div id="privacyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Kebijakan Privasi">
     <div class="modal-box">
-      <h2>🔒 Kebijakan Privasi & Perlindungan Data</h2>
-      <p>Sesuai <strong>UU PDP No. 27 Tahun 2022</strong>, kami berkomitmen melindungi privasi Anda.</p>
+      <h2>🔒 Kebijakan Privasi &amp; Perlindungan Data</h2>
+      <p>Sesuai <strong>UU PDP No. 27 Tahun 2022</strong>, kami berkomitmen sepenuhnya dalam melindungi data pribadi Anda.</p>
 
       <h3>📋 Data yang Dikumpulkan</h3>
       <ul>
-        <li>Rating kepuasan layanan Anda</li>
-        <li>Kategori layanan yang dipilih (opsional)</li>
-        <li>Saran / masukan tertulis (opsional, <strong>tanpa nama</strong>)</li>
-        <li>Nama petugas yang melayani (untuk evaluasi internal)</li>
-        <li>Waktu pengisian survei</li>
+        <li>Nama Lengkap &amp; Nomor HP (bersifat opsional)</li>
+        <li>Tanggal Kunjungan &amp; Cabang Hyundai</li>
+        <li>Jenis Layanan &amp; Nama Petugas (Service Advisor/SA/Sales)</li>
+        <li>Nilai penilaian kepuasan Anda (skala 1-5 dan 0-10)</li>
+        <li>Kritik, saran, serta masukan tertulis</li>
       </ul>
 
       <h3>🎯 Tujuan Penggunaan</h3>
       <ul>
-        <li>Evaluasi dan peningkatan kualitas layanan</li>
-        <li>Laporan internal kinerja petugas</li>
-        <li>Data tidak dijual atau dibagikan ke pihak ketiga</li>
+        <li>Bahan evaluasi internal dan peningkatan mutu pelayanan cabang.</li>
+        <li>Penilaian performa pelayanan petugas (SA/Sales).</li>
+        <li>Seluruh data dijaga kerahasiaannya dan tidak dibagikan ke pihak eksternal.</li>
       </ul>
 
       <h3>📅 Penyimpanan Data</h3>
-      <p>Data survei disimpan <strong>maksimal 1 tahun</strong> dan akan dihapus secara berkala sesuai kebijakan retensi data.</p>
+      <p>Data survei disimpan secara aman dalam database internal dengan kebijakan retensi maksimal 1 tahun, setelah itu akan dihapus atau dianonimkan untuk kebutuhan statistik jangka panjang.</p>
 
       <h3>✅ Hak Anda (Pasal 5–16 UU PDP)</h3>
       <ul>
-        <li>Survei ini <strong>anonim</strong> — kami tidak mengumpulkan nama atau kontak Anda</li>
-        <li>Anda berhak menolak mengisi survei kapan saja</li>
-        <li>Data bersifat agregat untuk keperluan statistik</li>
+        <li>Pengisian identitas (Nama &amp; HP) bersifat opsional. Anda berhak mengosongkannya jika ingin tanggapan Anda 100% anonim.</li>
+        <li>Anda dapat meminta penghapusan data tanggapan Anda dengan menghubungi Customer Service cabang terkait.</li>
       </ul>
 
       <button class="modal-close" onclick="document.getElementById('privacyModal').classList.remove('open')">
-        Mengerti &amp; Tutup
+        Saya Mengerti &amp; Tutup
       </button>
     </div>
   </div>
 
-  <!-- FORM SURVEI -->
+  <!-- CONTAINER FORM SURVEI -->
   <div class="survey-container">
-    <!-- Peringatan konfigurasi (hanya developer) -->
+    
+    <!-- Warning Mode Demo -->
     <div id="configWarning" class="config-warning" style="display:none;">
-      <strong>⚠️ Mode Demo:</strong> Data disimpan sementara di browser ini. Hubungkan Supabase di <code>config.js</code> untuk penyimpanan permanen.
+      <strong>⚠️ Mode Demo Aktif:</strong> Data disimpan sementara di browser ini. Hubungkan database online Supabase di <code>config.js</code> untuk penyimpanan permanen.
     </div>
 
-    <!-- Form Aktif -->
-    <div id="surveyFormCard">
-      <div class="survey-header">
-        <div class="logo-placeholder">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-            <line x1="9" y1="9" x2="9.01" y2="9"/>
-            <line x1="15" y1="9" x2="15.01" y2="9"/>
-          </svg>
-        </div>
-        <h1 id="shopName">Survei Kepuasan Pelanggan</h1>
-        <p>Pendapat Anda sangat berharga. Bantu kami meningkatkan layanan dengan mengisi survei singkat ini.</p>
+    <!-- Header Form -->
+    <div class="survey-header">
+      <div class="hyundai-logo-area">
+        <span class="hyundai-logo-text">Hyundai</span>
       </div>
+      <h1>Survei Kepuasan Pelanggan</h1>
+      <p>
+        Yth. Bapak/Ibu Pelanggan,<br><br>
+        Terima kasih telah memilih Hyundai. Kami berkomitmen untuk terus meningkatkan kualitas produk dan pelayanan. 
+        Mohon kesediaan Bapak/Ibu meluangkan waktu beberapa menit untuk mengisi survei ini. Seluruh informasi yang diberikan 
+        akan dijaga kerahasiaannya dan hanya digunakan sebagai bahan evaluasi serta peningkatan mutu pelayanan.
+      </p>
+    </div>
 
-      <form id="surveyForm" novalidate>
+    <!-- Progress Tracker -->
+    <div class="wizard-progress-container">
+      <div class="wizard-progress-track">
+        <div id="wizardProgressFill" class="wizard-progress-fill"></div>
+      </div>
+      <div class="wizard-step-info">
+        <span id="stepIndicatorText">Langkah 1 dari 5</span>
+        <span id="stepTitleText">Identitas Pelanggan</span>
+      </div>
+    </div>
 
-        <!-- Pilih Petugas -->
+    <!-- Form Utama -->
+    <form id="surveyForm" novalidate>
+
+      <!-- STEP 1: IDENTITAS PELANGGAN -->
+      <div id="step1" class="step-page active">
+        <div class="step-title">I. Identitas Pelanggan</div>
+        
         <div class="form-group">
-          <label class="form-label" for="petugasSelect">Siapa petugas yang melayani Anda?</label>
-          <select name="petugas" id="petugasSelect" class="form-input" required aria-required="true">
+          <label class="form-label" for="namaInput">Nama Pelanggan <span style="font-weight:400;color:var(--muted);">(Opsional)</span></label>
+          <input type="text" name="nama" id="namaInput" class="form-input" placeholder="Masukkan nama Anda...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="hpInput">Nomor HP <span style="font-weight:400;color:var(--muted);">(Opsional)</span></label>
+          <input type="tel" name="nomor_hp" id="hpInput" class="form-input" placeholder="Contoh: 081234567890...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tanggalInput">Tanggal Kunjungan <span style="color:var(--danger);">*</span></label>
+          <input type="date" name="tanggal_kunjungan" id="tanggalInput" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cabangInput">Cabang Hyundai <span style="color:var(--danger);">*</span></label>
+          <input type="text" name="cabang" id="cabangInput" class="form-input" placeholder="Contoh: Hyundai Gatot Subroto..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Jenis Layanan <span style="color:var(--danger);">*</span></label>
+          <div class="services-grid">
+            <div class="service-checkbox-card">
+              <input type="checkbox" name="jenis_layanan" id="srv1" value="Pembelian Kendaraan">
+              <label for="srv1" class="service-checkbox-label">Pembelian Kendaraan</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="checkbox" name="jenis_layanan" id="srv2" value="Servis Berkala">
+              <label for="srv2" class="service-checkbox-label">Servis Berkala</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="checkbox" name="jenis_layanan" id="srv3" value="Perbaikan Kendaraan">
+              <label for="srv3" class="service-checkbox-label">Perbaikan Kendaraan</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="checkbox" name="jenis_layanan" id="srv4" value="Klaim Garansi">
+              <label for="srv4" class="service-checkbox-label">Klaim Garansi</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="checkbox" name="jenis_layanan" id="srv5" value="Test Drive">
+              <label for="srv5" class="service-checkbox-label">Test Drive</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="checkbox" name="jenis_layanan" id="srv6" value="Body &amp; Paint">
+              <label for="srv6" class="service-checkbox-label">Body &amp; Paint</label>
+            </div>
+            <div class="service-checkbox-card" style="grid-column: span 2;">
+              <input type="checkbox" name="jenis_layanan" id="srv7" value="Lainnya">
+              <label for="srv7" class="service-checkbox-label">Lainnya (Tulis pada kolom di bawah)</label>
+            </div>
+          </div>
+          <input type="text" name="layanan_lainnya" id="layananLainnya" class="form-input" style="display:none; margin-top:8px;" placeholder="Layanan lainnya...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="petugasSelect">Nama Petugas / Service Advisor / Sales <span style="color:var(--danger);">*</span></label>
+          <select name="petugas" id="petugasSelect" class="form-input" required>
             <option value="" disabled selected>-- Pilih Nama Petugas --</option>
           </select>
         </div>
+      </div>
 
-        <!-- Rating Kepuasan -->
+      <!-- STEP 2: PENILAIAN KEPUASAN (1-7) -->
+      <div id="step2" class="step-page">
+        <div class="step-title">II. Penilaian Kepuasan (Bagian 1/2)</div>
+        <p style="font-size:0.8rem; color:var(--muted); margin-bottom:15px;">Berikan penilaian skala 1-5 berdasarkan pengalaman Anda (1 = Sangat Tidak Puas, 5 = Sangat Puas).</p>
+
+        <!-- Pertanyaan 1 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">1. Kemudahan memperoleh informasi mengenai produk atau layanan Hyundai. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 1">
+            <div class="rating-chip-item"><input type="radio" name="p1" id="p1_1" value="1" required><label for="p1_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p1" id="p1_2" value="2"><label for="p1_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p1" id="p1_3" value="3"><label for="p1_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p1" id="p1_4" value="4"><label for="p1_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p1" id="p1_5" value="5"><label for="p1_5" class="rating-chip-label">5</label></div>
+          </div>
+          <div class="rating-row-labels"><span>Sangat Tidak Puas</span><span>Sangat Puas</span></div>
+        </div>
+
+        <!-- Pertanyaan 2 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">2. Kemudahan melakukan reservasi atau booking layanan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 2">
+            <div class="rating-chip-item"><input type="radio" name="p2" id="p2_1" value="1" required><label for="p2_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p2" id="p2_2" value="2"><label for="p2_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p2" id="p2_3" value="3"><label for="p2_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p2" id="p2_4" value="4"><label for="p2_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p2" id="p2_5" value="5"><label for="p2_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 3 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">3. Keramahan dan kesopanan petugas dalam melayani pelanggan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 3">
+            <div class="rating-chip-item"><input type="radio" name="p3" id="p3_1" value="1" required><label for="p3_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p3" id="p3_2" value="2"><label for="p3_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p3" id="p3_3" value="3"><label for="p3_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p3" id="p3_4" value="4"><label for="p3_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p3" id="p3_5" value="5"><label for="p3_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 4 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">4. Pengetahuan petugas mengenai produk dan layanan Hyundai. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 4">
+            <div class="rating-chip-item"><input type="radio" name="p4" id="p4_1" value="1" required><label for="p4_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p4" id="p4_2" value="2"><label for="p4_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p4" id="p4_3" value="3"><label for="p4_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p4" id="p4_4" value="4"><label for="p4_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p4" id="p4_5" value="5"><label for="p4_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 5 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">5. Kecepatan petugas dalam memberikan pelayanan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 5">
+            <div class="rating-chip-item"><input type="radio" name="p5" id="p5_1" value="1" required><label for="p5_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p5" id="p5_2" value="2"><label for="p5_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p5" id="p5_3" value="3"><label for="p5_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p5" id="p5_4" value="4"><label for="p5_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p5" id="p5_5" value="5"><label for="p5_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 6 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">6. Kejelasan informasi mengenai biaya, proses, dan estimasi waktu pengerjaan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 6">
+            <div class="rating-chip-item"><input type="radio" name="p6" id="p6_1" value="1" required><label for="p6_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p6" id="p6_2" value="2"><label for="p6_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p6" id="p6_3" value="3"><label for="p6_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p6" id="p6_4" value="4"><label for="p6_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p6" id="p6_5" value="5"><label for="p6_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 7 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">7. Ketepatan waktu penyelesaian layanan sesuai estimasi yang diberikan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 7">
+            <div class="rating-chip-item"><input type="radio" name="p7" id="p7_1" value="1" required><label for="p7_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p7" id="p7_2" value="2"><label for="p7_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p7" id="p7_3" value="3"><label for="p7_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p7" id="p7_4" value="4"><label for="p7_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p7" id="p7_5" value="5"><label for="p7_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: PENILAIAN KEPUASAN (8-14) -->
+      <div id="step3" class="step-page">
+        <div class="step-title">II. Penilaian Kepuasan (Bagian 2/2)</div>
+        <p style="font-size:0.8rem; color:var(--muted); margin-bottom:15px;">Berikan penilaian skala 1-5 berdasarkan pengalaman Anda (1 = Sangat Tidak Puas, 5 = Sangat Puas).</p>
+
+        <!-- Pertanyaan 8 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">8. Kualitas hasil pekerjaan servis atau perbaikan kendaraan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 8">
+            <div class="rating-chip-item"><input type="radio" name="p8" id="p8_1" value="1" required><label for="p8_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p8" id="p8_2" value="2"><label for="p8_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p8" id="p8_3" value="3"><label for="p8_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p8" id="p8_4" value="4"><label for="p8_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p8" id="p8_5" value="5"><label for="p8_5" class="rating-chip-label">5</label></div>
+          </div>
+          <div class="rating-row-labels"><span>Sangat Tidak Puas</span><span>Sangat Puas</span></div>
+        </div>
+
+        <!-- Pertanyaan 9 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">9. Kebersihan kendaraan setelah dilakukan servis atau perbaikan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 9">
+            <div class="rating-chip-item"><input type="radio" name="p9" id="p9_1" value="1" required><label for="p9_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p9" id="p9_2" value="2"><label for="p9_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p9" id="p9_3" value="3"><label for="p9_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p9" id="p9_4" value="4"><label for="p9_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p9" id="p9_5" value="5"><label for="p9_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 10 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">10. Kebersihan dan kenyamanan area showroom atau bengkel. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 10">
+            <div class="rating-chip-item"><input type="radio" name="p10" id="p10_1" value="1" required><label for="p10_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p10" id="p10_2" value="2"><label for="p10_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p10" id="p10_3" value="3"><label for="p10_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p10" id="p10_4" value="4"><label for="p10_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p10" id="p10_5" value="5"><label for="p10_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 11 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">11. Kenyamanan ruang tunggu beserta fasilitas yang tersedia. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 11">
+            <div class="rating-chip-item"><input type="radio" name="p11" id="p11_1" value="1" required><label for="p11_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p11" id="p11_2" value="2"><label for="p11_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p11" id="p11_3" value="3"><label for="p11_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p11" id="p11_4" value="4"><label for="p11_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p11" id="p11_5" value="5"><label for="p11_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 12 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">12. Kemudahan proses administrasi dan pembayaran. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 12">
+            <div class="rating-chip-item"><input type="radio" name="p12" id="p12_1" value="1" required><label for="p12_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p12" id="p12_2" value="2"><label for="p12_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p12" id="p12_3" value="3"><label for="p12_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p12" id="p12_4" value="4"><label for="p12_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p12" id="p12_5" value="5"><label for="p12_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 13 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">13. Kesesuaian biaya dengan kualitas pelayanan yang diterima. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 13">
+            <div class="rating-chip-item"><input type="radio" name="p13" id="p13_1" value="1" required><label for="p13_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p13" id="p13_2" value="2"><label for="p13_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p13" id="p13_3" value="3"><label for="p13_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p13" id="p13_4" value="4"><label for="p13_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p13" id="p13_5" value="5"><label for="p13_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+
+        <!-- Pertanyaan 14 -->
+        <div class="rating-statement-group">
+          <div class="rating-statement-text">14. Kepuasan terhadap pelayanan yang diberikan secara keseluruhan. <span style="color:var(--danger);">*</span></div>
+          <div class="rating-chips-row" role="radiogroup" aria-label="Pertanyaan 14">
+            <div class="rating-chip-item"><input type="radio" name="p14" id="p14_1" value="1" required><label for="p14_1" class="rating-chip-label">1</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p14" id="p14_2" value="2"><label for="p14_2" class="rating-chip-label">2</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p14" id="p14_3" value="3"><label for="p14_3" class="rating-chip-label">3</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p14" id="p14_4" value="4"><label for="p14_4" class="rating-chip-label">4</label></div>
+            <div class="rating-chip-item"><input type="radio" name="p14" id="p14_5" value="5"><label for="p14_5" class="rating-chip-label">5</label></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: LOYALITAS & SARAN -->
+      <div id="step4" class="step-page">
+        <div class="step-title">III. Loyalitas &amp; Masukan</div>
+
         <div class="form-group">
-          <label class="form-label">Bagaimana kepuasan Anda terhadap layanan hari ini?</label>
-          <div class="rating-grid" role="radiogroup" aria-label="Pilihan rating kepuasan">
-            <div class="rating-item">
-              <input type="radio" name="rating" id="rate1" value="Sangat Tidak Puas" class="rating-input" required>
-              <label for="rate1" class="rating-label">
-                <span class="rating-emoji" aria-hidden="true">😠</span>
-                <span class="rating-text">Sangat Kecewa</span>
-              </label>
+          <label class="form-label">1. Apakah Anda bersedia menggunakan layanan Hyundai kembali? <span style="color:var(--danger);">*</span></label>
+          <div class="services-grid" role="radiogroup" aria-label="Loyalitas 1">
+            <div class="service-checkbox-card">
+              <input type="radio" name="loyalitas_kembali" id="ly1_ya" value="Ya" required>
+              <label for="ly1_ya" class="service-checkbox-label">Ya</label>
             </div>
-            <div class="rating-item">
-              <input type="radio" name="rating" id="rate2" value="Tidak Puas" class="rating-input">
-              <label for="rate2" class="rating-label">
-                <span class="rating-emoji" aria-hidden="true">🙁</span>
-                <span class="rating-text">Kecewa</span>
-              </label>
+            <div class="service-checkbox-card">
+              <input type="radio" name="loyalitas_kembali" id="ly1_mungkin" value="Mungkin">
+              <label for="ly1_mungkin" class="service-checkbox-label">Mungkin</label>
             </div>
-            <div class="rating-item">
-              <input type="radio" name="rating" id="rate3" value="Biasa Saja" class="rating-input">
-              <label for="rate3" class="rating-label">
-                <span class="rating-emoji" aria-hidden="true">😐</span>
-                <span class="rating-text">Biasa</span>
-              </label>
-            </div>
-            <div class="rating-item">
-              <input type="radio" name="rating" id="rate4" value="Puas" class="rating-input">
-              <label for="rate4" class="rating-label">
-                <span class="rating-emoji" aria-hidden="true">🙂</span>
-                <span class="rating-text">Puas</span>
-              </label>
-            </div>
-            <div class="rating-item">
-              <input type="radio" name="rating" id="rate5" value="Sangat Puas" class="rating-input">
-              <label for="rate5" class="rating-label">
-                <span class="rating-emoji" aria-hidden="true">🤩</span>
-                <span class="rating-text">Sangat Puas</span>
-              </label>
+            <div class="service-checkbox-card" style="grid-column: span 2;">
+              <input type="radio" name="loyalitas_kembali" id="ly1_tidak" value="Tidak">
+              <label for="ly1_tidak" class="service-checkbox-label">Tidak</label>
             </div>
           </div>
         </div>
 
-        <!-- Kategori -->
         <div class="form-group">
-          <label class="form-label">Apa yang paling berkesan? <span style="font-weight:400;color:#94a3b8;">(Opsional)</span></label>
-          <div class="category-container" role="radiogroup" aria-label="Pilihan kategori">
-            <div>
-              <input type="radio" name="kategori" id="cat1" value="Kualitas Produk" class="category-input">
-              <label for="cat1" class="category-label">Kualitas Produk</label>
-            </div>
-            <div>
-              <input type="radio" name="kategori" id="cat2" value="Kecepatan Layanan" class="category-input">
-              <label for="cat2" class="category-label">Kecepatan Layanan</label>
-            </div>
-            <div>
-              <input type="radio" name="kategori" id="cat3" value="Kebersihan Area" class="category-input">
-              <label for="cat3" class="category-label">Kebersihan Area</label>
-            </div>
-            <div>
-              <input type="radio" name="kategori" id="cat4" value="Sikap Staff/Kasir" class="category-input">
-              <label for="cat4" class="category-label">Sikap Staff / Kasir</label>
+          <label class="form-label">2. Seberapa besar kemungkinan Anda merekomendasikan Hyundai kepada keluarga, teman, atau rekan kerja? <span style="color:var(--danger);">*</span></label>
+          <p style="font-size:0.75rem; color:var(--muted); margin-bottom:8px;">Skala 0 = Sangat Tidak Mungkin, 10 = Sangat Mungkin</p>
+          <div class="nps-container">
+            <div class="nps-row" role="radiogroup" aria-label="Loyalitas 2">
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps0" value="0" required><label for="nps0" class="nps-label">0</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps1" value="1"><label for="nps1" class="nps-label">1</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps2" value="2"><label for="nps2" class="nps-label">2</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps3" value="3"><label for="nps3" class="nps-label">3</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps4" value="4"><label for="nps4" class="nps-label">4</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps5" value="5"><label for="nps5" class="nps-label">5</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps6" value="6"><label for="nps6" class="nps-label">6</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps7" value="7"><label for="nps7" class="nps-label">7</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps8" value="8"><label for="nps8" class="nps-label">8</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps9" value="9"><label for="nps9" class="nps-label">9</label></div>
+              <div class="nps-item"><input type="radio" name="loyalitas_rekomendasi" id="nps10" value="10"><label for="nps10" class="nps-label">10</label></div>
             </div>
           </div>
         </div>
 
-        <!-- Saran -->
+        <div class="step-title" style="margin-top:30px;">IV. Saran &amp; Masukan</div>
+        
         <div class="form-group">
-          <label class="form-label" for="saran">Ada masukan atau saran? <span style="font-weight:400;color:#94a3b8;">(Opsional)</span></label>
-          <textarea name="saran" id="saran" class="feedback-textarea" placeholder="Tulis masukan Anda di sini..." aria-label="Kolom saran opsional"></textarea>
+          <label class="form-label" for="saranSukaInput">1. Hal apa yang paling Anda sukai dari pelayanan Hyundai? <span style="font-weight:400;color:var(--muted);">(Opsional)</span></label>
+          <textarea name="saran_disukai" id="saranSukaInput" class="feedback-textarea" placeholder="Tulis hal yang Anda sukai..."></textarea>
         </div>
 
-        <!-- PERSETUJUAN DATA (UU PDP) -->
+        <div class="form-group">
+          <label class="form-label" for="saranTingkatInput">2. Menurut Anda, aspek apa yang perlu kami tingkatkan? <span style="font-weight:400;color:var(--muted);">(Opsional)</span></label>
+          <textarea name="saran_ditingkatkan" id="saranTingkatInput" class="feedback-textarea" placeholder="Tulis aspek yang perlu ditingkatkan..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="saranKritikInput">3. Kritik, saran, atau masukan lainnya <span style="font-weight:400;color:var(--muted);">(Opsional)</span></label>
+          <textarea name="saran_lainnya" id="saranKritikInput" class="feedback-textarea" placeholder="Tulis kritik, saran, atau masukan lainnya..."></textarea>
+        </div>
+      </div>
+
+      <!-- STEP 5: PENILAIAN KESELURUHAN & PDP -->
+      <div id="step5" class="step-page">
+        <div class="step-title">V. Penilaian Keseluruhan &amp; Kirim</div>
+
+        <div class="form-group">
+          <label class="form-label">Bagaimana penilaian Anda terhadap pengalaman pelayanan Hyundai secara keseluruhan? <span style="color:var(--danger);">*</span></label>
+          <div class="services-grid" role="radiogroup" aria-label="Penilaian Keseluruhan">
+            <div class="service-checkbox-card">
+              <input type="radio" name="penilaian_keseluruhan" id="ov1" value="Sangat Tidak Puas" required>
+              <label for="ov1" class="service-checkbox-label">😠 Sangat Tidak Puas</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="radio" name="penilaian_keseluruhan" id="ov2" value="Tidak Puas">
+              <label for="ov2" class="service-checkbox-label">🙁 Tidak Puas</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="radio" name="penilaian_keseluruhan" id="ov3" value="Cukup Puas">
+              <label for="ov3" class="service-checkbox-label">😐 Cukup Puas</label>
+            </div>
+            <div class="service-checkbox-card">
+              <input type="radio" name="penilaian_keseluruhan" id="ov4" value="Puas">
+              <label for="ov4" class="service-checkbox-label">🙂 Puas</label>
+            </div>
+            <div class="service-checkbox-card" style="grid-column: span 2;">
+              <input type="radio" name="penilaian_keseluruhan" id="ov5" value="Sangat Puas">
+              <label for="ov5" class="service-checkbox-label">🤩 Sangat Puas</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persetujuan Data UU PDP -->
         <div class="consent-box">
           <label>
-            <input type="checkbox" id="consentCheck" required aria-required="true">
+            <input type="checkbox" id="consentCheck" required>
             <span>
-              Saya menyetujui data tanggapan ini digunakan untuk keperluan evaluasi layanan secara anonim, sesuai 
-              <a href="#" onclick="document.getElementById('privacyModal').classList.add('open'); return false;" aria-label="Buka kebijakan privasi">Kebijakan Privasi &amp; UU PDP No. 27/2022</a>.
+              Saya secara sadar memberikan persetujuan untuk menyimpan data tanggapan ini demi kepentingan analisis internal dan 
+              evaluasi kualitas pelayanan, sesuai dengan <a href="#" onclick="document.getElementById('privacyModal').classList.add('open'); return false;">Kebijakan Privasi &amp; UU PDP No. 27/2022</a>.
             </span>
           </label>
-          <div class="pdp-badge" aria-label="Sistem ini patuh terhadap UU PDP">
+          <div class="pdp-badge">
             🛡️ Patuh UU PDP No. 27/2022
           </div>
         </div>
 
-        <!-- Tombol Kirim -->
-        <button type="submit" id="submitBtn" class="submit-btn" disabled>
-          <span>Kirim Masukan</span>
-          <div class="spinner" id="btnSpinner" aria-hidden="true"></div>
-        </button>
-      </form>
-    </div>
+        <div id="formErrorMsg" class="error-message">Mohon lengkapi seluruh pertanyaan wajib yang bertanda bintang (*) sebelum mengirim survei.</div>
+      </div>
 
-    <!-- Sukses -->
+      <!-- Tombol Navigasi Wizard -->
+      <div class="wizard-buttons">
+        <button type="button" id="prevBtn" class="prev-btn" style="display:none;" onclick="navigateStep(-1)">← Kembali</button>
+        <button type="button" id="nextBtn" class="next-btn" onclick="navigateStep(1)">Lanjut →</button>
+        <button type="submit" id="submitBtn" class="submit-btn" style="display:none;" disabled>
+          <span>Kirim Survei</span>
+          <div class="spinner" id="btnSpinner"></div>
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Halaman Sukses -->
     <div id="successCard" class="success-card" role="alert" aria-live="polite">
-      <div class="success-icon" aria-hidden="true">✓</div>
+      <div class="success-icon">✓</div>
       <h2>Terima Kasih!</h2>
-      <p>Masukan Anda telah diterima dengan aman. Pendapat Anda membantu kami meningkatkan kualitas layanan.</p>
+      <p>
+        Terima kasih atas waktu dan partisipasi Anda dalam mengisi survei ini.<br><br>
+        Masukan yang Anda berikan sangat berarti bagi kami dalam meningkatkan kualitas pelayanan, kenyamanan, dan kepuasan pelanggan. 
+        Kami berkomitmen untuk terus memberikan pengalaman terbaik dalam setiap layanan Hyundai.<br><br>
+        <strong style="color:var(--primary);">Hyundai – Progress for Humanity</strong>
+      </p>
       <button onclick="resetSurvey()" class="back-btn">Isi Survei Lagi</button>
     </div>
+
   </div>
 
   <script>
+    // Penanganan tampilan kolom 'Lainnya' pada jenis layanan
+    document.getElementById('srv7').addEventListener('change', function() {
+      const field = document.getElementById('layananLainnya');
+      field.style.display = this.checked ? 'block' : 'none';
+      if (!this.checked) field.value = '';
+    });
+
     // Aktifkan tombol kirim hanya jika consent dicentang
     document.getElementById('consentCheck').addEventListener('change', function() {
       document.getElementById('submitBtn').disabled = !this.checked;
