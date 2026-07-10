@@ -2,26 +2,68 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="Survei Kepuasan Pelanggan - Bantu kami tingkatkan layanan dengan mengisi survei singkat">
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Preconnect untuk performa loading font lebih cepat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <title>Survei Kepuasan Pelanggan</title>
   <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
 </head>
 <body>
 
+  <!-- MODAL KEBIJAKAN PRIVASI (UU PDP No.27/2022) -->
+  <div id="privacyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Kebijakan Privasi">
+    <div class="modal-box">
+      <h2>🔒 Kebijakan Privasi & Perlindungan Data</h2>
+      <p>Sesuai <strong>UU PDP No. 27 Tahun 2022</strong>, kami berkomitmen melindungi privasi Anda.</p>
+
+      <h3>📋 Data yang Dikumpulkan</h3>
+      <ul>
+        <li>Rating kepuasan layanan Anda</li>
+        <li>Kategori layanan yang dipilih (opsional)</li>
+        <li>Saran / masukan tertulis (opsional, <strong>tanpa nama</strong>)</li>
+        <li>Nama petugas yang melayani (untuk evaluasi internal)</li>
+        <li>Waktu pengisian survei</li>
+      </ul>
+
+      <h3>🎯 Tujuan Penggunaan</h3>
+      <ul>
+        <li>Evaluasi dan peningkatan kualitas layanan</li>
+        <li>Laporan internal kinerja petugas</li>
+        <li>Data tidak dijual atau dibagikan ke pihak ketiga</li>
+      </ul>
+
+      <h3>📅 Penyimpanan Data</h3>
+      <p>Data survei disimpan <strong>maksimal 1 tahun</strong> dan akan dihapus secara berkala sesuai kebijakan retensi data.</p>
+
+      <h3>✅ Hak Anda (Pasal 5–16 UU PDP)</h3>
+      <ul>
+        <li>Survei ini <strong>anonim</strong> — kami tidak mengumpulkan nama atau kontak Anda</li>
+        <li>Anda berhak menolak mengisi survei kapan saja</li>
+        <li>Data bersifat agregat untuk keperluan statistik</li>
+      </ul>
+
+      <button class="modal-close" onclick="document.getElementById('privacyModal').classList.remove('open')">
+        Mengerti &amp; Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- FORM SURVEI -->
   <div class="survey-container">
-    <!-- Status Konfigurasi: Hanya muncul jika URL Google Sheets belum diisi di app.js -->
-    <div id="configWarning" class="config-warning" style="display: none;">
-      <strong>⚠️ Perhatian (Developer/Owner):</strong><br>
-      API Google Sheets belum dikonfigurasi. Form ini berjalan dalam mode <strong>Demo (Simulasi)</strong>. 
-      Silakan atur URL Google Apps Script Anda di file <code>app.js</code> pada baris pertama untuk mengaktifkan pengiriman data asli.
+    <!-- Peringatan konfigurasi (hanya developer) -->
+    <div id="configWarning" class="config-warning" style="display:none;">
+      <strong>⚠️ Mode Demo:</strong> Data disimpan sementara di browser ini. Hubungkan Supabase di <code>config.js</code> untuk penyimpanan permanen.
     </div>
 
-    <!-- Tampilan Form Survei -->
+    <!-- Form Aktif -->
     <div id="surveyFormCard">
       <div class="survey-header">
         <div class="logo-placeholder">
-          <!-- Ikon SVG senyum elegan -->
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
             <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
             <line x1="9" y1="9" x2="9.01" y2="9"/>
@@ -29,70 +71,65 @@
           </svg>
         </div>
         <h1 id="shopName">Survei Kepuasan Pelanggan</h1>
-        <p>Pendapat Anda sangat berharga bagi kami. Bantu kami meningkatkan layanan dengan mengisi survei singkat ini.</p>
+        <p>Pendapat Anda sangat berharga. Bantu kami meningkatkan layanan dengan mengisi survei singkat ini.</p>
       </div>
 
-      <form id="surveyForm">
-        <!-- Pilihan Petugas -->
-        <div class="form-group" style="margin-bottom: 25px;">
-          <label class="form-label" style="text-align: left; margin-bottom: 8px;">Pilih Petugas yang Melayani Anda</label>
-          <select name="petugas" id="petugasSelect" class="form-input" style="width: 100%; cursor: pointer;" required>
+      <form id="surveyForm" novalidate>
+
+        <!-- Pilih Petugas -->
+        <div class="form-group">
+          <label class="form-label" for="petugasSelect">Siapa petugas yang melayani Anda?</label>
+          <select name="petugas" id="petugasSelect" class="form-input" required aria-required="true">
             <option value="" disabled selected>-- Pilih Nama Petugas --</option>
           </select>
         </div>
 
-        <!-- Pilihan Rating Kepuasan -->
+        <!-- Rating Kepuasan -->
         <div class="form-group">
-          <label class="form-label">Bagaimana kepuasan Anda terhadap layanan kami hari ini?</label>
-          <div class="rating-grid">
-            
+          <label class="form-label">Bagaimana kepuasan Anda terhadap layanan hari ini?</label>
+          <div class="rating-grid" role="radiogroup" aria-label="Pilihan rating kepuasan">
             <div class="rating-item">
               <input type="radio" name="rating" id="rate1" value="Sangat Tidak Puas" class="rating-input" required>
               <label for="rate1" class="rating-label">
-                <span class="rating-emoji">😠</span>
+                <span class="rating-emoji" aria-hidden="true">😠</span>
                 <span class="rating-text">Sangat Kecewa</span>
               </label>
             </div>
-
             <div class="rating-item">
               <input type="radio" name="rating" id="rate2" value="Tidak Puas" class="rating-input">
               <label for="rate2" class="rating-label">
-                <span class="rating-emoji">🙁</span>
+                <span class="rating-emoji" aria-hidden="true">🙁</span>
                 <span class="rating-text">Kecewa</span>
               </label>
             </div>
-
             <div class="rating-item">
               <input type="radio" name="rating" id="rate3" value="Biasa Saja" class="rating-input">
               <label for="rate3" class="rating-label">
-                <span class="rating-emoji">😐</span>
+                <span class="rating-emoji" aria-hidden="true">😐</span>
                 <span class="rating-text">Biasa</span>
               </label>
             </div>
-
             <div class="rating-item">
               <input type="radio" name="rating" id="rate4" value="Puas" class="rating-input">
               <label for="rate4" class="rating-label">
-                <span class="rating-emoji">🙂</span>
+                <span class="rating-emoji" aria-hidden="true">🙂</span>
                 <span class="rating-text">Puas</span>
               </label>
             </div>
-
             <div class="rating-item">
               <input type="radio" name="rating" id="rate5" value="Sangat Puas" class="rating-input">
               <label for="rate5" class="rating-label">
-                <span class="rating-emoji">🤩</span>
+                <span class="rating-emoji" aria-hidden="true">🤩</span>
                 <span class="rating-text">Sangat Puas</span>
               </label>
             </div>
-
           </div>
         </div>
 
-        <!-- Pilihan Kategori Layanan -->
+        <!-- Kategori -->
         <div class="form-group">
-          <label class="form-label">Apa yang paling berkesan bagi Anda? (Opsional)</label>
-          <div class="category-container">
+          <label class="form-label">Apa yang paling berkesan? <span style="font-weight:400;color:#94a3b8;">(Opsional)</span></label>
+          <div class="category-container" role="radiogroup" aria-label="Pilihan kategori">
             <div>
               <input type="radio" name="kategori" id="cat1" value="Kualitas Produk" class="category-input">
               <label for="cat1" class="category-label">Kualitas Produk</label>
@@ -112,30 +149,49 @@
           </div>
         </div>
 
-        <!-- Kolom Saran/Komentar -->
+        <!-- Saran -->
         <div class="form-group">
-          <label class="form-label">Ada masukan atau saran untuk kami?</label>
-          <textarea name="saran" id="saran" class="feedback-textarea" placeholder="Tulis masukan Anda di sini (opsional)..."></textarea>
+          <label class="form-label" for="saran">Ada masukan atau saran? <span style="font-weight:400;color:#94a3b8;">(Opsional)</span></label>
+          <textarea name="saran" id="saran" class="feedback-textarea" placeholder="Tulis masukan Anda di sini..." aria-label="Kolom saran opsional"></textarea>
+        </div>
+
+        <!-- PERSETUJUAN DATA (UU PDP) -->
+        <div class="consent-box">
+          <label>
+            <input type="checkbox" id="consentCheck" required aria-required="true">
+            <span>
+              Saya menyetujui data tanggapan ini digunakan untuk keperluan evaluasi layanan secara anonim, sesuai 
+              <a href="#" onclick="document.getElementById('privacyModal').classList.add('open'); return false;" aria-label="Buka kebijakan privasi">Kebijakan Privasi &amp; UU PDP No. 27/2022</a>.
+            </span>
+          </label>
+          <div class="pdp-badge" aria-label="Sistem ini patuh terhadap UU PDP">
+            🛡️ Patuh UU PDP No. 27/2022
+          </div>
         </div>
 
         <!-- Tombol Kirim -->
-        <button type="submit" id="submitBtn" class="submit-btn">
+        <button type="submit" id="submitBtn" class="submit-btn" disabled>
           <span>Kirim Masukan</span>
-          <div class="spinner" id="btnSpinner"></div>
+          <div class="spinner" id="btnSpinner" aria-hidden="true"></div>
         </button>
       </form>
     </div>
 
-    <!-- Tampilan Berhasil Kirim -->
-    <div id="successCard" class="success-card">
-      <div class="success-icon">✓</div>
+    <!-- Sukses -->
+    <div id="successCard" class="success-card" role="alert" aria-live="polite">
+      <div class="success-icon" aria-hidden="true">✓</div>
       <h2>Terima Kasih!</h2>
-      <p>Masukan Anda telah berhasil kami terima. Pendapat Anda sangat membantu kami untuk terus meningkatkan kualitas pelayanan toko kami.</p>
+      <p>Masukan Anda telah diterima dengan aman. Pendapat Anda membantu kami meningkatkan kualitas layanan.</p>
       <button onclick="resetSurvey()" class="back-btn">Isi Survei Lagi</button>
     </div>
   </div>
 
-  <script src="config.js"></script>
+  <script>
+    // Aktifkan tombol kirim hanya jika consent dicentang
+    document.getElementById('consentCheck').addEventListener('change', function() {
+      document.getElementById('submitBtn').disabled = !this.checked;
+    });
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
