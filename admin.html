@@ -382,7 +382,13 @@
         subtitle.innerHTML = 'Mode Demo Lokal (data tersimpan di browser ini)';
         clearBtn.style.display = 'inline-flex';
         var raw = localStorage.getItem('demo_survey_responses');
-        var local = raw ? JSON.parse(raw) : [];
+        var local = [];
+        try {
+          local = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(local)) local = [];
+        } catch(e) {
+          local = [];
+        }
         loadedResponses = local.slice().reverse();
       }
 
@@ -450,14 +456,22 @@
         }
       } else {
         var raw = localStorage.getItem('demo_petugas');
-        if (!raw) {
+        var local = [];
+        try {
+          local = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(local)) local = [];
+        } catch(e) {
+          local = [];
+        }
+        
+        if (local.length === 0) {
           var defaults = (CONFIG.DEFAULT_PETUGAS || []).map(function(name, i) {
             return { id: i + 1, nama: name, username: name.toLowerCase().replace(/\s+/g,''), password: '123' };
           });
           localStorage.setItem('demo_petugas', JSON.stringify(defaults));
           loadedOfficers = defaults;
         } else {
-          loadedOfficers = JSON.parse(raw);
+          loadedOfficers = local;
         }
       }
 
@@ -470,13 +484,15 @@
       loadedOfficers.forEach(function(p) {
         var stars = p.password ? '•'.repeat(Math.min(p.password.length, 8)) : '(kosong)';
         var tr = document.createElement('tr');
+        var safeNama = (p.nama || '').replace(/'/g, "\\'");
+        var safeId = String(p.id).replace(/'/g, "\\'");
         tr.innerHTML =
-          '<td><strong>' + p.nama + '</strong></td>' +
+          '<td><strong>' + (p.nama || '-') + '</strong></td>' +
           '<td>' + (p.username || '-') + '</td>' +
           '<td><code>' + stars + '</code></td>' +
           '<td>' +
-            '<button type="button" class="btn btn-secondary" style="padding:5px 10px;font-size:11px;margin-right:4px;" onclick="changeOfficerPassword(' + p.id + ', \'' + p.nama.replace(/'/g, "\\'") + '\')">Ubah Sandi</button>' +
-            '<button type="button" class="btn btn-danger" style="padding:5px 10px;font-size:11px;" onclick="deleteOfficer(' + p.id + ', \'' + p.nama.replace(/'/g, "\\'") + '\')">Hapus</button>' +
+            '<button type="button" class="btn btn-secondary" style="padding:5px 10px;font-size:11px;margin-right:4px;" onclick="changeOfficerPassword(\'' + safeId + '\', \'' + safeNama + '\')">Ubah Sandi</button>' +
+            '<button type="button" class="btn btn-danger" style="padding:5px 10px;font-size:11px;" onclick="deleteOfficer(\'' + safeId + '\', \'' + safeNama + '\')">Hapus</button>' +
           '</td>';
         body.appendChild(tr);
       });
@@ -548,7 +564,7 @@
         }
       } else {
         loadedOfficers = loadedOfficers.map(function(p) {
-          return p.id === id ? Object.assign({}, p, { password: newPass }) : p;
+          return String(p.id) === String(id) ? Object.assign({}, p, { password: newPass }) : p;
         });
         localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
         alert('Sandi berhasil diubah!');
@@ -575,7 +591,7 @@
           alert('Gagal menghapus petugas dari database.'); return;
         }
       } else {
-        loadedOfficers = loadedOfficers.filter(function(p) { return p.id !== id; });
+        loadedOfficers = loadedOfficers.filter(function(p) { return String(p.id) !== String(id); });
         localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
         alert('Petugas berhasil dihapus!');
       }

@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!petugasSelect) return;
 
     if (isSupabaseConfigured) {
-      // Ambil dari database online Supabase
-      fetch(`${CONFIG.SUPABASE_URL}/rest/v1/petugas?select=*`, {
+      // Ambil dari database online Supabase (menggunakan view aman agar tidak memuat username/password)
+      fetch(`${CONFIG.SUPABASE_URL}/rest/v1/daftar_petugas?select=nama&order=nama.asc`, {
         method: "GET",
         headers: {
           "apikey": CONFIG.SUPABASE_ANON_KEY,
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       })
       .then(res => {
-        if (!res.ok) throw new Error("Gagal memuat petugas");
+        if (!res.ok) throw new Error("Gagal memuat petugas dari view");
         return res.json();
       })
       .then(data => {
