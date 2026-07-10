@@ -446,7 +446,7 @@
         subtitle.innerHTML = 'Penyimpanan Offline (Data tersimpan di browser ini)';
         clearBtn.style.display = 'inline-flex';
         
-        var raw = localStorage.getItem('demo_survey_responses');
+        var raw = localStorage.getItem('offline_survey_responses');
         var local = [];
         try {
           local = raw ? JSON.parse(raw) : [];
@@ -559,9 +559,9 @@
                 <p><strong>1. Hal Paling Disukai:</strong><br> ${res.saran_disukai || '<span style="color:var(--muted);">(Kosong)</span>'}</p>
                 <p style="margin-top:8px;"><strong>2. Aspek Perlu Ditingkatkan:</strong><br> ${res.saran_ditingkatkan || '<span style="color:var(--muted);">(Kosong)</span>'}</p>
                 <p style="margin-top:8px;"><strong>3. Kritik &amp; Saran Lainnya:</strong><br> ${res.saran_lainnya || '<span style="color:var(--muted);">(Kosong)</span>'}</p>
-                
                 <p style="margin-top:14px; padding-top:10px; border-top:1px solid #e5e7eb;">
-                  <strong>Nomor HP Pelanggan:</strong> <code>${res.nomor_hp || 'Tidak Mengisi'}</code>
+                  <strong>Nomor HP Pelanggan:</strong> <code>${res.nomor_hp || '-'}</code><br>
+                  <strong>Email Pelanggan:</strong> <code>${res.email || '-'}</code>
                 </p>
               </div>
             </div>
@@ -669,8 +669,7 @@
           body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--danger);">Gagal memuat data petugas dari database.</td></tr>';
           return;
         }
-      } else {
-        var raw = localStorage.getItem('demo_petugas');
+        var raw = localStorage.getItem('offline_petugas');
         var local = [];
         try {
           local = raw ? JSON.parse(raw) : [];
@@ -683,7 +682,7 @@
           var defaults = (CONFIG.DEFAULT_PETUGAS || []).map(function(name, i) {
             return { id: i + 1, nama: name, username: name.toLowerCase().replace(/\s+/g,''), password: '123' };
           });
-          localStorage.setItem('demo_petugas', JSON.stringify(defaults));
+          localStorage.setItem('offline_petugas', JSON.stringify(defaults));
           loadedOfficers = defaults;
         } else {
           loadedOfficers = local;
@@ -745,7 +744,7 @@
       } else {
         var newOfficer = { id: Date.now(), nama: nama, username: username, password: password };
         loadedOfficers.push(newOfficer);
-        localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
+        localStorage.setItem('offline_petugas', JSON.stringify(loadedOfficers));
         alert('Petugas "' + nama + '" berhasil disimpan secara lokal!');
       }
 
@@ -781,7 +780,7 @@
         loadedOfficers = loadedOfficers.map(function(p) {
           return String(p.id) === String(id) ? Object.assign({}, p, { password: newPass }) : p;
         });
-        localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
+        localStorage.setItem('offline_petugas', JSON.stringify(loadedOfficers));
         alert('Sandi berhasil diubah secara lokal!');
       }
       loadOfficersData();
@@ -806,7 +805,7 @@
         }
       } else {
         loadedOfficers = loadedOfficers.filter(function(p) { return String(p.id) !== String(id); });
-        localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
+        localStorage.setItem('offline_petugas', JSON.stringify(loadedOfficers));
         alert('Petugas berhasil dihapus secara lokal!');
       }
       loadOfficersData();
@@ -815,7 +814,7 @@
     // Hapus Data Survei Lokal
     function clearData() {
       if (confirm('Apakah Anda yakin ingin menghapus semua data survei lokal di browser ini?')) {
-        localStorage.removeItem('demo_survey_responses');
+        localStorage.removeItem('offline_survey_responses');
         loadDashboardData();
       }
     }
@@ -828,7 +827,7 @@
 
       // Generate Headers
       var headers = [
-        "Tanggal/Waktu", "Nama Pelanggan", "Nomor HP", "Tanggal Kunjungan", "Cabang", 
+        "Tanggal/Waktu", "Nama Pelanggan", "Nomor HP", "Email", "Tanggal Kunjungan", "Cabang", 
         "Jenis Layanan", "Keterangan Layanan Lainnya", "Petugas/SA",
         "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14",
         "Loyalitas Kembali", "Rekomendasi (NPS)", "Saran Hal Disukai", "Saran Perlu Ditingkatkan", 
@@ -851,6 +850,7 @@
           dateFormatted,
           res.nama_pelanggan || 'Anonim',
           res.nomor_hp || 'Tidak Mengisi',
+          res.email || '-',
           res.tanggal_kunjungan,
           cleanCabang,
           res.jenis_layanan || '-',

@@ -127,6 +127,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Validasi Input Tiap Langkah
   function validateStep(step) {
     if (step === 1) {
+      const nama = document.getElementById("namaInput").value.trim();
+      const hp = document.getElementById("hpInput").value.trim();
+      const email = document.getElementById("emailInput").value.trim();
       const tanggal = document.getElementById("tanggalInput").value;
       const cabang = document.getElementById("cabangInput").value.trim();
       const petugas = document.getElementById("petugasSelect").value;
@@ -134,7 +137,14 @@ document.addEventListener("DOMContentLoaded", function () {
       // Validasi minimal 1 jenis layanan terpilih
       const checkedLayanan = document.querySelectorAll('input[name="jenis_layanan"]:checked');
 
-      if (!tanggal || !cabang || !petugas || checkedLayanan.length === 0) {
+      if (!nama || !hp || !email || !tanggal || !cabang || !petugas || checkedLayanan.length === 0) {
+        return false;
+      }
+
+      // Validasi format email sederhana
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Silakan masukkan alamat email yang valid.");
         return false;
       }
 
@@ -206,8 +216,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const payload = {
-      nama_pelanggan: document.getElementById("namaInput").value.trim() || "Anonim",
-      nomor_hp: document.getElementById("hpInput").value.trim() || "Tidak Mengisi",
+      nama_pelanggan: document.getElementById("namaInput").value.trim(),
+      nomor_hp: document.getElementById("hpInput").value.trim(),
+      email: document.getElementById("emailInput").value.trim(),
       tanggal_kunjungan: document.getElementById("tanggalInput").value,
       cabang: document.getElementById("cabangInput").value.trim(),
       jenis_layanan: layananList.join(", "),
@@ -270,6 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
                    `=== IDENTITAS PELANGGAN ===\n` +
                    `- Nama: ${payload.nama_pelanggan}\n` +
                    `- No HP: ${payload.nomor_hp}\n` +
+                   `- Email: ${payload.email}\n` +
                    `- Tanggal Kunjungan: ${payload.tanggal_kunjungan}\n` +
                    `- Cabang: ${payload.cabang}\n` +
                    `- Jenis Layanan: ${payload.jenis_layanan}\n` +
@@ -293,6 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
       promises.push(web3FormsPromise);
     }
 
+
     // Eksekusi Pengiriman
     if (promises.length > 0) {
       Promise.all(promises)
@@ -305,9 +318,9 @@ document.addEventListener("DOMContentLoaded", function () {
           resetLoadingState();
         });
     } else {
-      // 3. JIKA DUA-DUANYA KOSONG -> Simpan di LocalStorage (Mode Demo)
+      // 3. JIKA DUA-DUANYA KOSONG -> Simpan di LocalStorage (Penyimpanan Offline)
       setTimeout(function () {
-        let responses = localStorage.getItem("demo_survey_responses");
+        let responses = localStorage.getItem("offline_survey_responses");
         responses = responses ? JSON.parse(responses) : [];
         
         responses.push({
@@ -316,7 +329,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ...payload
         });
 
-        localStorage.setItem("demo_survey_responses", JSON.stringify(responses));
+        localStorage.setItem("offline_survey_responses", JSON.stringify(responses));
         showSuccessState();
       }, 1000);
     }

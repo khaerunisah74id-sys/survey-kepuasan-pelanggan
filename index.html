@@ -17,38 +17,37 @@
   <div id="privacyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Kebijakan Privasi">
     <div class="modal-box">
       <h2>🔒 Kebijakan Privasi &amp; Perlindungan Data</h2>
-      <p>Sesuai <strong>UU PDP No. 27 Tahun 2022</strong>, kami berkomitmen sepenuhnya dalam melindungi data pribadi Anda.</p>
+      <p style="font-size:0.85rem; line-height:1.5; margin-bottom:12px;">
+        Privasi Anda penting bagi Hyundai Motors Indonesia ("Hyundai" atau "kami") dan perusahaan afiliasinya, seperti kepercayaan Anda terhadap produk dan layanan Hyundai. Kami berusaha keras untuk melindungi privasi online Anda, sambil memberikan pengalaman situs web yang menyenangkan yang menyediakan informasi, produk, dan layanan yang relevan dan berguna bagi Anda. Tujuan dari Kebijakan Privasi Hyundai Motors Indonesia ini ("Kebijakan Privasi") ini adalah untuk menginformasikan dan menerangkan tentang cara kami mengumpulkan, menggunakan, dan membagikan informasi melalui situs web kami.
+      </p>
 
-      <h3>📋 Data yang Dikumpulkan</h3>
-      <ul>
-        <li>Nama Lengkap &amp; Nomor HP (bersifat opsional)</li>
+      <h3>📋 Data yang Dikumpulkan (Wajib Diisi)</h3>
+      <ul style="font-size:0.8rem; margin-bottom:12px;">
+        <li>Nama Lengkap, Nomor HP, dan Alamat Email</li>
         <li>Tanggal Kunjungan &amp; Cabang Hyundai</li>
         <li>Jenis Layanan &amp; Nama Petugas (Service Advisor/SA/Sales)</li>
         <li>Nilai penilaian kepuasan Anda (skala 1-5 dan 0-10)</li>
         <li>Kritik, saran, serta masukan tertulis</li>
       </ul>
 
-      <h3>🎯 Tujuan Penggunaan</h3>
-      <ul>
-        <li>Bahan evaluasi internal dan peningkatan mutu pelayanan cabang.</li>
+      <h3>🎯 Tujuan Penggunaan &amp; Kepatuhan Hukum</h3>
+      <ul style="font-size:0.8rem; margin-bottom:12px;">
+        <li>Bahan evaluasi internal dan peningkatan mutu pelayanan cabang Hyundai.</li>
         <li>Penilaian performa pelayanan petugas (SA/Sales).</li>
-        <li>Seluruh data dijaga kerahasiaannya dan tidak dibagikan ke pihak eksternal.</li>
+        <li>Seluruh data dijaga kerahasiaannya dan diproses secara sah berdasarkan UU PDP No. 27/2022.</li>
       </ul>
 
       <h3>📅 Penyimpanan Data</h3>
-      <p>Data survei disimpan secara aman dalam database internal dengan kebijakan retensi maksimal 1 tahun, setelah itu akan dihapus atau dianonimkan untuk kebutuhan statistik jangka panjang.</p>
-
-      <h3>✅ Hak Anda (Pasal 5–16 UU PDP)</h3>
-      <ul>
-        <li>Pengisian identitas (Nama &amp; HP) bersifat opsional. Anda berhak mengosongkannya jika ingin tanggapan Anda 100% anonim.</li>
-        <li>Anda dapat meminta penghapusan data tanggapan Anda dengan menghubungi Customer Service cabang terkait.</li>
-      </ul>
+      <p style="font-size:0.8rem; line-height:1.5; margin-bottom:15px;">
+        Data survei disimpan secara aman dalam database internal dengan standar keamanan data yang ketat untuk mencegah akses tanpa izin sesuai dengan ketentuan perundang-undangan perlindungan data pribadi yang berlaku.
+      </p>
 
       <button class="modal-close" onclick="document.getElementById('privacyModal').classList.remove('open')">
         Saya Mengerti &amp; Tutup
       </button>
     </div>
   </div>
+
 
   <!-- CONTAINER FORM SURVEI -->
   <div class="survey-container">
@@ -83,15 +82,21 @@
       <!-- STEP 1: IDENTITAS PELANGGAN -->
       <div id="step1" class="step-page active">
         <div class="step-title">I. Identitas Pelanggan</div>
-        
+        <p style="font-size:0.78rem; color:var(--muted); margin-bottom:14px;">* Kolom yang wajib diisi. Informasi pribadi Anda dijaga kerahasiaannya.</p>
+
         <div class="form-group">
-          <label class="form-label" for="namaInput">Nama Pelanggan <span style="font-weight:400;color:var(--muted);">(Opsional)</span></label>
-          <input type="text" name="nama" id="namaInput" class="form-input" placeholder="Masukkan nama Anda...">
+          <label class="form-label" for="namaInput">Nama Pelanggan <span style="color:var(--danger);">*</span></label>
+          <input type="text" name="nama" id="namaInput" class="form-input" placeholder="Masukkan nama Anda..." required>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="hpInput">Nomor HP <span style="font-weight:400;color:var(--muted);">(Opsional)</span></label>
-          <input type="tel" name="nomor_hp" id="hpInput" class="form-input" placeholder="Contoh: 081234567890...">
+          <label class="form-label" for="hpInput">Nomor HP <span style="color:var(--danger);">*</span></label>
+          <input type="tel" name="nomor_hp" id="hpInput" class="form-input" placeholder="Contoh: 081234567890..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emailInput">Email <span style="color:var(--danger);">*</span></label>
+          <input type="email" name="email" id="emailInput" class="form-input" placeholder="Masukkan alamat email Anda" required>
         </div>
 
         <div class="form-group">
@@ -101,7 +106,91 @@
 
         <div class="form-group">
           <label class="form-label" for="cabangInput">Cabang Hyundai <span style="color:var(--danger);">*</span></label>
-          <input type="text" name="cabang" id="cabangInput" class="form-input" placeholder="Contoh: Hyundai Gatot Subroto..." required>
+          <select name="cabang" id="cabangInput" class="form-input" required>
+            <option value="" disabled selected>-- Pilih Cabang Hyundai --</option>
+            <optgroup label="DKI Jakarta">
+              <option>Hyundai Jakarta Barat – Daan Mogot</option>
+              <option>Hyundai Jakarta Barat – Puri Indah</option>
+              <option>Hyundai Jakarta Pusat – Hasyim Ashari</option>
+              <option>Hyundai Jakarta Pusat – Senen</option>
+              <option>Hyundai Jakarta Selatan – Fatmawati</option>
+              <option>Hyundai Jakarta Selatan – Mampang</option>
+              <option>Hyundai Jakarta Selatan – Pancoran</option>
+              <option>Hyundai Jakarta Selatan – Simprug</option>
+              <option>Hyundai Jakarta Timur – Cakung</option>
+              <option>Hyundai Jakarta Timur – Kalimalang</option>
+              <option>Hyundai Jakarta Utara – Kelapa Gading</option>
+              <option>Hyundai Jakarta Utara – Sunter</option>
+            </optgroup>
+            <optgroup label="Banten & Tangerang">
+              <option>Hyundai BSD City</option>
+              <option>Hyundai Ciputat</option>
+              <option>Hyundai Karawaci</option>
+              <option>Hyundai Serang</option>
+              <option>Hyundai Serpong</option>
+              <option>Hyundai Tangerang – Sudirman</option>
+            </optgroup>
+            <optgroup label="Jawa Barat & Bekasi">
+              <option>Hyundai Bandung – Cihampelas</option>
+              <option>Hyundai Bandung – Soekarno Hatta</option>
+              <option>Hyundai Bekasi – Ahmad Yani</option>
+              <option>Hyundai Bekasi – Cikarang</option>
+              <option>Hyundai Bogor</option>
+              <option>Hyundai Cibubur</option>
+              <option>Hyundai Cirebon</option>
+              <option>Hyundai Depok</option>
+              <option>Hyundai Karawang</option>
+            </optgroup>
+            <optgroup label="Jawa Tengah & DI Yogyakarta">
+              <option>Hyundai Semarang – Raden Patah</option>
+              <option>Hyundai Semarang – Siliwangi</option>
+              <option>Hyundai Solo</option>
+              <option>Hyundai Yogyakarta – Magelang</option>
+              <option>Hyundai Yogyakarta – Ringroad</option>
+            </optgroup>
+            <optgroup label="Jawa Timur">
+              <option>Hyundai Gresik</option>
+              <option>Hyundai Kediri</option>
+              <option>Hyundai Malang</option>
+              <option>Hyundai Sidoarjo</option>
+              <option>Hyundai Surabaya – A. Yani</option>
+              <option>Hyundai Surabaya – HR Muhammad</option>
+              <option>Hyundai Surabaya – Kenjeran</option>
+            </optgroup>
+            <optgroup label="Bali & Nusa Tenggara">
+              <option>Hyundai Bali – Denpasar Gatot Subroto</option>
+              <option>Hyundai Bali – Gianyar</option>
+              <option>Hyundai Bali – Kuta</option>
+              <option>Hyundai Lombok</option>
+            </optgroup>
+            <optgroup label="Sumatera">
+              <option>Hyundai Aceh</option>
+              <option>Hyundai Batam</option>
+              <option>Hyundai Jambi</option>
+              <option>Hyundai Lampung</option>
+              <option>Hyundai Medan – Adam Malik</option>
+              <option>Hyundai Medan – Gatot Subroto</option>
+              <option>Hyundai Palembang</option>
+              <option>Hyundai Pekanbaru</option>
+              <option>Hyundai Padang</option>
+            </optgroup>
+            <optgroup label="Kalimantan">
+              <option>Hyundai Balikpapan</option>
+              <option>Hyundai Banjarmasin</option>
+              <option>Hyundai Pontianak</option>
+              <option>Hyundai Samarinda</option>
+            </optgroup>
+            <optgroup label="Sulawesi">
+              <option>Hyundai Makassar – Urip Sumoharjo</option>
+              <option>Hyundai Makassar – Veteran</option>
+              <option>Hyundai Manado</option>
+              <option>Hyundai Palu</option>
+            </optgroup>
+            <optgroup label="Papua & Maluku">
+              <option>Hyundai Jayapura</option>
+              <option>Hyundai Ambon</option>
+            </optgroup>
+          </select>
         </div>
 
         <div class="form-group">
@@ -146,6 +235,7 @@
           </select>
         </div>
       </div>
+
 
       <!-- STEP 2: PENILAIAN KEPUASAN (1-7) -->
       <div id="step2" class="step-page">
