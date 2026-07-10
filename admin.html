@@ -9,52 +9,48 @@
 </head>
 <body>
 
-  <!-- Form Login Admin (Tampil pertama kali jika belum login) -->
+  <!-- Form Login Admin -->
   <div id="loginCard" class="survey-container" style="display: none; margin: 20px auto;">
     <div class="survey-header">
       <div class="logo-placeholder">
-        <!-- Ikon Gembok SVG -->
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
       </div>
       <h1>Login Admin</h1>
-      <p>Masukkan username dan password admin untuk melihat data hasil survei.</p>
+      <p>Masukkan username dan password untuk mengakses dashboard laporan survei.</p>
     </div>
-    
     <form id="loginForm">
       <div class="form-group" style="margin-bottom: 20px;">
-        <label class="form-label" style="text-align: left; margin-bottom: 8px;">Username</label>
-        <input type="text" id="usernameInput" class="form-input" placeholder="Masukkan username..." required autocomplete="username">
+        <label class="form-label" style="text-align:left; margin-bottom:8px;">Username</label>
+        <input type="text" id="usernameInput" class="form-input" placeholder="Masukkan username..." autocomplete="username">
       </div>
       <div class="form-group" style="margin-bottom: 20px;">
-        <label class="form-label" style="text-align: left; margin-bottom: 8px;">Password</label>
-        <input type="password" id="passwordInput" class="form-input" placeholder="Masukkan password..." required autocomplete="current-password">
+        <label class="form-label" style="text-align:left; margin-bottom:8px;">Password</label>
+        <input type="password" id="passwordInput" class="form-input" placeholder="Masukkan password..." autocomplete="current-password">
       </div>
       <div id="loginError" class="error-message">Username atau Password salah!</div>
-      <button type="submit" class="submit-btn" style="margin-top: 15px;">Masuk Dashboard</button>
+      <button type="submit" class="submit-btn" style="margin-top:15px;">Masuk Dashboard</button>
     </form>
   </div>
 
-  <!-- Dashboard Laporan Admin -->
+  <!-- Dashboard Admin -->
   <div id="adminDashboard" class="admin-container" style="display: none;">
     <div class="admin-header">
       <div class="admin-title">
         <h1>Dashboard Laporan Survei</h1>
-        <p>Kelola data dan analisa tingkat kepuasan pelanggan Anda (Mode Demo Lokal)</p>
+        <p id="dashboardSubtitle">Kelola data kepuasan pelanggan Anda</p>
       </div>
       <div class="action-buttons">
         <a href="index.html" class="btn btn-secondary">
-          <!-- Ikon SVG Panah Kiri -->
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
           Kembali ke Survei
         </a>
-        <button id="exportBtn" class="btn btn-primary" onclick="exportToCSV()">
-          <!-- Ikon SVG Download -->
+        <button type="button" id="exportBtn" class="btn btn-primary" onclick="exportToCSV()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
@@ -62,8 +58,7 @@
           </svg>
           Ekspor ke CSV
         </button>
-        <button id="clearBtn" class="btn btn-danger" onclick="clearData()">
-          <!-- Ikon SVG Sampah -->
+        <button type="button" id="clearBtn" class="btn btn-danger" onclick="clearData()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3 6 5 6 21 6"></polyline>
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -75,15 +70,14 @@
       </div>
     </div>
 
-    <!-- Tab Navigasi Admin -->
+    <!-- Tab Navigasi -->
     <div class="admin-tabs">
-      <button type="button" class="tab-link active" onclick="switchTab('reportsTab')">Riwayat Survei</button>
-      <button type="button" class="tab-link" onclick="switchTab('officersTab')">Kelola Petugas / User</button>
+      <button type="button" id="tabBtnReports" class="tab-link active" onclick="switchTab('reportsTab', this)">📊 Riwayat Survei</button>
+      <button type="button" id="tabBtnOfficers" class="tab-link" onclick="switchTab('officersTab', this)">👤 Kelola Petugas / User</button>
     </div>
 
-    <!-- TAB 1: RIWAYAT LAPORAN & SURVEI -->
+    <!-- TAB 1: RIWAYAT SURVEI -->
     <div id="reportsTab" class="tab-content active">
-      <!-- Ringkasan Statistik -->
       <div class="stats-grid">
         <div class="stat-card">
           <h3>Total Responden</h3>
@@ -99,53 +93,52 @@
         </div>
       </div>
 
-      <!-- Tabel Riwayat Data -->
-      <h2 class="form-label" style="text-align: left; margin-bottom: 10px;">Riwayat Masukan Pelanggan</h2>
+      <h2 class="form-label" style="text-align:left; margin-bottom:10px;">Riwayat Masukan Pelanggan</h2>
       <div class="table-wrapper">
-        <table class="admin-table" id="responsesTable">
+        <table class="admin-table">
           <thead>
             <tr>
               <th>Tanggal/Waktu</th>
               <th>Nama Petugas</th>
               <th>Tingkat Kepuasan</th>
-              <th>Kategori Terkesan</th>
+              <th>Kategori</th>
               <th>Saran / Masukan</th>
             </tr>
           </thead>
-          <tbody id="responsesBody">
-            <!-- Data akan dimasukkan lewat JS -->
-          </tbody>
+          <tbody id="responsesBody"></tbody>
         </table>
-        <div id="emptyState" class="empty-state" style="display: none;">
-          Belum ada data survei yang masuk. Coba isi survei terlebih dahulu di halaman depan.
+        <div id="emptyState" class="empty-state" style="display:none;">
+          Belum ada data survei. Isi survei terlebih dahulu di halaman utama.
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: KELOLA PETUGAS & USER -->
-    <div id="officersTab" class="tab-content" style="margin-top: 15px;">
+    <!-- TAB 2: KELOLA PETUGAS -->
+    <div id="officersTab" class="tab-content">
       <div class="mgmt-grid">
         <!-- Form Tambah Petugas -->
         <div class="card">
           <h2>Tambah Petugas Baru</h2>
           <form id="addOfficerForm">
-            <div class="form-group" style="margin-bottom: 15px;">
-              <label class="form-label" style="text-align: left; margin-bottom: 5px; font-size: 13px;">Nama Petugas</label>
-              <input type="text" id="officerName" class="form-input" placeholder="Nama petugas (misal: Rian Kasir)..." required>
+            <div class="form-group" style="margin-bottom:15px;">
+              <label class="form-label" style="text-align:left; margin-bottom:5px; font-size:13px;">Nama Petugas <span style="color:red">*</span></label>
+              <input type="text" id="officerName" class="form-input" placeholder="Contoh: Rani Kasir...">
             </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-              <label class="form-label" style="text-align: left; margin-bottom: 5px; font-size: 13px;">Username Login</label>
+            <div class="form-group" style="margin-bottom:15px;">
+              <label class="form-label" style="text-align:left; margin-bottom:5px; font-size:13px;">Username Login</label>
               <input type="text" id="officerUsername" class="form-input" placeholder="Username (opsional)...">
             </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-              <label class="form-group" style="text-align: left; margin-bottom: 5px; font-size: 13px;">Password / PIN</label>
-              <input type="password" id="officerPassword" class="form-input" placeholder="Password (opsional)...">
+            <div class="form-group" style="margin-bottom:15px;">
+              <label class="form-label" style="text-align:left; margin-bottom:5px; font-size:13px;">Password / PIN</label>
+              <input type="password" id="officerPassword" class="form-input" placeholder="Password (default: 123)...">
             </div>
-            <button type="submit" class="submit-btn" style="margin-top: 10px; padding: 12px; font-size: 14px;">Simpan Petugas</button>
+            <button type="submit" class="submit-btn" style="padding:12px; font-size:14px; margin-top:10px;">
+              + Simpan Petugas
+            </button>
           </form>
         </div>
 
-        <!-- Daftar Petugas & Aksi -->
+        <!-- Daftar Petugas -->
         <div class="card">
           <h2>Daftar Petugas Aktif</h2>
           <div class="table-wrapper">
@@ -154,441 +147,372 @@
                 <tr>
                   <th>Nama Petugas</th>
                   <th>Username</th>
-                  <th>Password</th>
+                  <th>Sandi</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
-              <tbody id="officersBody">
-                <!-- Diisi via JS -->
-              </tbody>
+              <tbody id="officersBody"></tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
+  </div><!-- end adminDashboard -->
 
   <script>
-    let loadedResponses = []; // Variabel global untuk menyimpan data survei yang sedang aktif
+    // ============================
+    // VARIABEL GLOBAL
+    // ============================
+    var loadedResponses = [];
+    var loadedOfficers = [];
 
-    // ==========================================
-    // SISTEM KEAMANAN LOGIN ADMIN
-    // ==========================================
-    function checkAdminAccess() {
-      const password = CONFIG.ADMIN_PASSWORD;
-      
-      // Jika password dinonaktifkan (dikosongkan), langsung tampilkan dashboard
-      if (!password || password === "") {
-        document.getElementById("loginCard").style.display = "none";
-        document.getElementById("adminDashboard").style.display = "block";
-        loadDashboardData();
-        return;
+    // ============================
+    // TAB SWITCHER
+    // ============================
+    function switchTab(tabId, clickedBtn) {
+      // Sembunyikan semua tab content
+      var contents = document.getElementsByClassName('tab-content');
+      for (var i = 0; i < contents.length; i++) {
+        contents[i].classList.remove('active');
       }
+      // Nonaktifkan semua tab buttons
+      var buttons = document.getElementsByClassName('tab-link');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+      }
+      // Tampilkan tab yang dipilih
+      document.getElementById(tabId).classList.add('active');
+      // Aktifkan button yang diklik
+      if (clickedBtn) clickedBtn.classList.add('active');
 
-      const isAuth = sessionStorage.getItem("admin_authenticated") === "true";
-      if (isAuth) {
-        document.getElementById("loginCard").style.display = "none";
-        document.getElementById("adminDashboard").style.display = "block";
-        loadDashboardData();
-      } else {
-        document.getElementById("adminDashboard").style.display = "none";
-        document.getElementById("loginCard").style.display = "block";
+      // Jika tab petugas dibuka, load datanya
+      if (tabId === 'officersTab') {
+        loadOfficersData();
       }
     }
 
-    // Event listener saat halaman dimuat
-    document.addEventListener("DOMContentLoaded", function () {
-      const loginForm = document.getElementById("loginForm");
-      const addOfficerForm = document.getElementById("addOfficerForm");
+    // ============================
+    // LOGIN & AKSES KONTROL
+    // ============================
+    function showDashboard() {
+      document.getElementById('loginCard').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'block';
+      loadDashboardData();
+    }
 
-      // Submit form login admin
-      if (loginForm) {
-        loginForm.addEventListener("submit", function (e) {
-          e.preventDefault();
-          
-          const usernameInput = document.getElementById("usernameInput").value;
-          const passwordInput = document.getElementById("passwordInput").value;
-          const loginError = document.getElementById("loginError");
-
-          // Validasi kecocokan username & password
-          if (usernameInput === CONFIG.ADMIN_USERNAME && passwordInput === CONFIG.ADMIN_PASSWORD) {
-            sessionStorage.setItem("admin_authenticated", "true");
-            document.getElementById("loginCard").style.display = "none";
-            document.getElementById("adminDashboard").style.display = "block";
-            loginError.style.display = "none";
-            loadDashboardData();
-            loadOfficersData();
-          } else {
-            loginError.style.display = "block";
-            document.getElementById("passwordInput").value = "";
-          }
-        });
+    function checkAdminAccess() {
+      var password = CONFIG.ADMIN_PASSWORD;
+      if (!password || password === '') {
+        showDashboard();
+        return;
       }
-
-      // Submit form tambah petugas baru
-      if (addOfficerForm) {
-        addOfficerForm.addEventListener("submit", function (e) {
-          e.preventDefault();
-          addOfficer();
-        });
+      var isAuth = sessionStorage.getItem('admin_authenticated') === 'true';
+      if (isAuth) {
+        showDashboard();
+      } else {
+        document.getElementById('loginCard').style.display = 'block';
+        document.getElementById('adminDashboard').style.display = 'none';
       }
+    }
 
-      // Jalankan cek akses masuk
+    document.addEventListener('DOMContentLoaded', function() {
+      // Handle login
+      var loginForm = document.getElementById('loginForm');
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var username = document.getElementById('usernameInput').value.trim();
+        var password = document.getElementById('passwordInput').value;
+        var errorEl = document.getElementById('loginError');
+
+        if (username === CONFIG.ADMIN_USERNAME && password === CONFIG.ADMIN_PASSWORD) {
+          sessionStorage.setItem('admin_authenticated', 'true');
+          errorEl.style.display = 'none';
+          showDashboard();
+        } else {
+          errorEl.style.display = 'block';
+          document.getElementById('passwordInput').value = '';
+        }
+      });
+
+      // Handle tambah petugas
+      var officerForm = document.getElementById('addOfficerForm');
+      officerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        addOfficer();
+      });
+
+      // Cek akses saat halaman dimuat
       checkAdminAccess();
     });
 
-    // ==========================================
-    // LOGIKA PENYAJIAN DATA DASHBOARD (LAPORAN)
-    // ==========================================
+    // ============================
+    // LOAD DATA SURVEI (TAB 1)
+    // ============================
     async function loadDashboardData() {
-      const responsesBody = document.getElementById("responsesBody");
-      const emptyState = document.getElementById("emptyState");
-      const totalRespondenEl = document.getElementById("totalResponden");
-      const persenPuasEl = document.getElementById("persenPuas");
-      const rataRatingEl = document.getElementById("rataRating");
-      const clearBtn = document.getElementById("clearBtn");
-      const subtitleEl = document.querySelector(".admin-title p");
+      var isSupabase = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+      var subtitle = document.getElementById('dashboardSubtitle');
+      var clearBtn = document.getElementById('clearBtn');
+      var responsesBody = document.getElementById('responsesBody');
+      var emptyState = document.getElementById('emptyState');
 
-      const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
-
-      if (isSupabaseConfigured) {
-        subtitleEl.innerHTML = `Mode Database Online: <strong style="color:var(--primary-color)">Supabase</strong>`;
-        clearBtn.style.display = "none";
-        responsesBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Mengambil data dari database online...</td></tr>`;
-
+      if (isSupabase) {
+        subtitle.innerHTML = 'Mode Online: <strong style="color:var(--primary-color)">Supabase Database</strong>';
+        clearBtn.style.display = 'none';
+        responsesBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">Memuat data...</td></tr>';
         try {
-          const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/survei_responses?select=*&order=created_at.desc`, {
-            method: "GET",
-            headers: {
-              "apikey": CONFIG.SUPABASE_ANON_KEY,
-              "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
-            }
+          var res = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/survei_responses?select=*&order=created_at.desc', {
+            headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
           });
-
-          if (!response.ok) throw new Error("Gagal mengambil data.");
-          
-          const data = await response.json();
-          loadedResponses = data.map(item => ({
-            tanggal: new Date(item.created_at).toLocaleString("id-ID"),
-            petugas: item.petugas || "Umum",
-            rating: item.rating,
-            kategori: item.kategori,
-            saran: item.saran
-          }));
-
-        } catch (error) {
-          console.error(error);
-          responsesBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Gagal memuat data dari database online. Silakan cek koneksi internet Anda.</td></tr>`;
+          var data = await res.json();
+          loadedResponses = data.map(function(item) {
+            return {
+              tanggal: new Date(item.created_at).toLocaleString('id-ID'),
+              petugas: item.petugas || 'Umum',
+              rating: item.rating,
+              kategori: item.kategori,
+              saran: item.saran
+            };
+          });
+        } catch(err) {
+          responsesBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:red;">Gagal memuat data. Cek koneksi internet.</td></tr>';
           return;
         }
       } else {
-        subtitleEl.innerHTML = `Mode Demo Lokal: Menyimpan sementara di browser komputer ini`;
-        clearBtn.style.display = "inline-flex";
-
-        const responsesData = localStorage.getItem("demo_survey_responses");
-        const localData = responsesData ? JSON.parse(responsesData) : [];
-        loadedResponses = [...localData].reverse();
+        subtitle.innerHTML = 'Mode Demo Lokal (data tersimpan di browser ini)';
+        clearBtn.style.display = 'inline-flex';
+        var raw = localStorage.getItem('demo_survey_responses');
+        var local = raw ? JSON.parse(raw) : [];
+        loadedResponses = local.slice().reverse();
       }
 
-      totalRespondenEl.innerText = loadedResponses.length;
+      // Render statistik
+      document.getElementById('totalResponden').innerText = loadedResponses.length;
 
       if (loadedResponses.length === 0) {
-        responsesBody.innerHTML = "";
-        emptyState.style.display = "block";
-        persenPuasEl.innerText = "0%";
-        rataRatingEl.innerText = "-";
+        responsesBody.innerHTML = '';
+        emptyState.style.display = 'block';
+        document.getElementById('persenPuas').innerText = '0%';
+        document.getElementById('rataRating').innerText = '-';
         return;
       }
 
-      emptyState.style.display = "none";
-      responsesBody.innerHTML = "";
+      emptyState.style.display = 'none';
+      responsesBody.innerHTML = '';
 
-      const ratingWeights = {
-        "Sangat Puas": 5,
-        "Puas": 4,
-        "Biasa Saja": 3,
-        "Tidak Puas": 2,
-        "Sangat Tidak Puas": 1
-      };
+      var weights = { 'Sangat Puas': 5, 'Puas': 4, 'Biasa Saja': 3, 'Tidak Puas': 2, 'Sangat Tidak Puas': 1 };
+      var totalVal = 0, countPuas = 0;
 
-      let totalRatingVal = 0;
-      let countPuas = 0;
+      loadedResponses.forEach(function(res) {
+        var rating = res.rating;
+        var badgeClass = 'badge-biasa';
+        if (rating === 'Sangat Puas') { badgeClass = 'badge-sangat-puas'; countPuas++; }
+        else if (rating === 'Puas') { badgeClass = 'badge-puas'; countPuas++; }
+        else if (rating === 'Tidak Puas') { badgeClass = 'badge-tidak-puas'; }
+        else if (rating === 'Sangat Tidak Puas') { badgeClass = 'badge-sangat-tidak-puas'; }
+        totalVal += (weights[rating] || 0);
 
-      loadedResponses.forEach(res => {
-        const tr = document.createElement("tr");
-        let badgeClass = "badge-biasa";
-        const rating = res.rating;
-        
-        if (rating === "Sangat Puas") {
-          badgeClass = "badge-sangat-puas";
-          countPuas++;
-        } else if (rating === "Puas") {
-          badgeClass = "badge-puas";
-          countPuas++;
-        } else if (rating === "Biasa Saja") {
-          badgeClass = "badge-biasa";
-        } else if (rating === "Tidak Puas") {
-          badgeClass = "badge-tidak-puas";
-        } else if (rating === "Sangat Tidak Puas") {
-          badgeClass = "badge-sangat-tidak-puas";
-        }
-
-        const ratingVal = ratingWeights[rating] || 0;
-        totalRatingVal += ratingVal;
-
-        tr.innerHTML = `
-          <td>${res.tanggal}</td>
-          <td><strong>${res.petugas || 'Umum'}</strong></td>
-          <td><span class="rating-badge ${badgeClass}">${rating}</span></td>
-          <td>${res.kategori || 'Tidak Memilih'}</td>
-          <td>${res.saran || '-'}</td>
-        `;
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + res.tanggal + '</td>' +
+          '<td><strong>' + (res.petugas || 'Umum') + '</strong></td>' +
+          '<td><span class="rating-badge ' + badgeClass + '">' + rating + '</span></td>' +
+          '<td>' + (res.kategori || '-') + '</td>' +
+          '<td>' + (res.saran || '-') + '</td>';
         responsesBody.appendChild(tr);
       });
 
-      const persenPuas = Math.round((countPuas / loadedResponses.length) * 100);
-      persenPuasEl.innerText = persenPuas + "%";
+      var persen = Math.round((countPuas / loadedResponses.length) * 100);
+      document.getElementById('persenPuas').innerText = persen + '%';
 
-      const rataRating = (totalRatingVal / loadedResponses.length).toFixed(1);
-      let averageEmoji = "😐";
-      if (rataRating >= 4.5) averageEmoji = "🤩";
-      else if (rataRating >= 3.5) averageEmoji = "🙂";
-      else if (rataRating >= 2.5) averageEmoji = "😐";
-      else if (rataRating >= 1.5) averageEmoji = "🙁";
-      else averageEmoji = "😠";
-
-      rataRatingEl.innerHTML = `${rataRating} <span style="font-size: 20px; vertical-align: middle;">${averageEmoji}</span>`;
+      var rata = (totalVal / loadedResponses.length).toFixed(1);
+      var emoji = rata >= 4.5 ? '🤩' : rata >= 3.5 ? '🙂' : rata >= 2.5 ? '😐' : rata >= 1.5 ? '🙁' : '😠';
+      document.getElementById('rataRating').innerHTML = rata + ' <span style="font-size:20px">' + emoji + '</span>';
     }
 
-    // ==========================================
-    // LOGIKA MANAJEMEN PETUGAS / USER
-    // ==========================================
+    // ============================
+    // LOAD DATA PETUGAS (TAB 2)
+    // ============================
     async function loadOfficersData() {
-      const officersBody = document.getElementById("officersBody");
-      const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+      var isSupabase = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+      var body = document.getElementById('officersBody');
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:15px;">Memuat data petugas...</td></tr>';
 
-      if (isSupabaseConfigured) {
-        // Ambil dari Supabase
+      if (isSupabase) {
         try {
-          const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/petugas?select=*&order=nama.asc`, {
-            method: "GET",
-            headers: {
-              "apikey": CONFIG.SUPABASE_ANON_KEY,
-              "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
-            }
+          var res = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/petugas?select=*&order=nama.asc', {
+            headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
           });
-
-          if (!response.ok) throw new Error("Gagal memuat petugas.");
-          loadedOfficers = await response.json();
-        } catch (error) {
-          console.error(error);
-          officersBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Gagal memuat daftar petugas.</td></tr>`;
+          loadedOfficers = await res.json();
+        } catch(err) {
+          body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:red;">Gagal memuat petugas.</td></tr>';
           return;
         }
       } else {
-        // Ambil dari LocalStorage
-        let localOfficers = localStorage.getItem("demo_petugas");
-        if (!localOfficers) {
-          // Inisialisasi awal jika kosong dengan data dari config
-          const defaultList = CONFIG.DEFAULT_PETUGAS || [];
-          const seeded = defaultList.map((name, index) => ({
-            id: index + 1,
-            nama: name,
-            username: name.toLowerCase().replace(/\s+/g, ""),
-            password: "123"
-          }));
-          localStorage.setItem("demo_petugas", JSON.stringify(seeded));
-          localOfficers = JSON.stringify(seeded);
+        var raw = localStorage.getItem('demo_petugas');
+        if (!raw) {
+          var defaults = (CONFIG.DEFAULT_PETUGAS || []).map(function(name, i) {
+            return { id: i + 1, nama: name, username: name.toLowerCase().replace(/\s+/g,''), password: '123' };
+          });
+          localStorage.setItem('demo_petugas', JSON.stringify(defaults));
+          loadedOfficers = defaults;
+        } else {
+          loadedOfficers = JSON.parse(raw);
         }
-        loadedOfficers = JSON.parse(localOfficers);
       }
 
-      // Render ke tabel petugas
-      officersBody.innerHTML = "";
+      body.innerHTML = '';
       if (loadedOfficers.length === 0) {
-        officersBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Belum ada petugas aktif. Silakan tambahkan baru.</td></tr>`;
+        body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Belum ada petugas. Tambahkan di form sebelah kiri.</td></tr>';
         return;
       }
 
-      loadedOfficers.forEach(p => {
-        const tr = document.createElement("tr");
-        const passText = p.password ? "*".repeat(p.password.length) : "(Tidak Ada)";
-        tr.innerHTML = `
-          <td><strong>${p.nama}</strong></td>
-          <td>${p.username || '-'}</td>
-          <td><code style="font-family:monospace;">${passText}</code></td>
-          <td>
-            <button class="btn btn-secondary" style="padding:6px 12px; font-size:11px;" onclick="changeOfficerPassword(${p.id}, '${p.nama}')">Ubah Sandi</button>
-            <button class="btn btn-danger" style="padding:6px 12px; font-size:11px; background:#ef4444;" onclick="deleteOfficer(${p.id}, '${p.nama}')">Hapus</button>
-          </td>
-        `;
-        officersBody.appendChild(tr);
+      loadedOfficers.forEach(function(p) {
+        var stars = p.password ? '•'.repeat(Math.min(p.password.length, 8)) : '(kosong)';
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><strong>' + p.nama + '</strong></td>' +
+          '<td>' + (p.username || '-') + '</td>' +
+          '<td><code>' + stars + '</code></td>' +
+          '<td>' +
+            '<button type="button" class="btn btn-secondary" style="padding:5px 10px;font-size:11px;margin-right:4px;" onclick="changeOfficerPassword(' + p.id + ', \'' + p.nama.replace(/'/g, "\\'") + '\')">Ubah Sandi</button>' +
+            '<button type="button" class="btn btn-danger" style="padding:5px 10px;font-size:11px;" onclick="deleteOfficer(' + p.id + ', \'' + p.nama.replace(/'/g, "\\'") + '\')">Hapus</button>' +
+          '</td>';
+        body.appendChild(tr);
       });
     }
 
-    // Fungsi menambah petugas
+    // ============================
+    // TAMBAH PETUGAS
+    // ============================
     async function addOfficer() {
-      const nama = document.getElementById("officerName").value;
-      const username = document.getElementById("officerUsername").value || nama.toLowerCase().replace(/\s+/g, "");
-      const password = document.getElementById("officerPassword").value || "123";
-      
-      const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+      var nama = document.getElementById('officerName').value.trim();
+      var username = document.getElementById('officerUsername').value.trim() || nama.toLowerCase().replace(/\s+/g, '');
+      var password = document.getElementById('officerPassword').value || '123';
 
-      if (isSupabaseConfigured) {
-        // Tambah ke Supabase
+      if (!nama) { alert('Nama petugas wajib diisi!'); return; }
+
+      var isSupabase = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+      if (isSupabase) {
         try {
-          const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/petugas`, {
-            method: "POST",
+          var res = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/petugas', {
+            method: 'POST',
             headers: {
-              "apikey": CONFIG.SUPABASE_ANON_KEY,
-              "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
+              'apikey': CONFIG.SUPABASE_ANON_KEY,
+              'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal'
             },
-            body: JSON.stringify({ nama, username, password })
+            body: JSON.stringify({ nama: nama, username: username, password: password })
           });
-
-          if (!response.ok) throw new Error("Gagal menambah petugas.");
-          alert(`Petugas "${nama}" berhasil disimpan!`);
-        } catch (error) {
-          console.error(error);
-          alert("Gagal menambahkan petugas baru online.");
-          return;
+          if (!res.ok) throw new Error('Gagal');
+          alert('Petugas "' + nama + '" berhasil disimpan!');
+        } catch(err) {
+          alert('Gagal menyimpan petugas ke database online.'); return;
         }
       } else {
-        // Tambah ke LocalStorage
-        const newOfficer = {
-          id: Date.now(), // Unique ID
-          nama,
-          username,
-          password
-        };
+        var newOfficer = { id: Date.now(), nama: nama, username: username, password: password };
         loadedOfficers.push(newOfficer);
-        localStorage.setItem("demo_petugas", JSON.stringify(loadedOfficers));
-        alert(`Petugas "${nama}" berhasil disimpan secara lokal!`);
+        localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
+        alert('Petugas "' + nama + '" berhasil ditambahkan!');
       }
 
-      document.getElementById("addOfficerForm").reset();
+      document.getElementById('addOfficerForm').reset();
       loadOfficersData();
     }
 
-    // Fungsi mengganti password petugas
+    // ============================
+    // UBAH SANDI PETUGAS
+    // ============================
     async function changeOfficerPassword(id, name) {
-      const newPassword = prompt(`Masukkan Password/PIN baru untuk petugas "${name}":`);
-      if (newPassword === null) return; // Batal
-      if (newPassword.trim() === "") {
-        alert("Password tidak boleh kosong.");
-        return;
-      }
+      var newPass = prompt('Masukkan sandi baru untuk petugas "' + name + '":');
+      if (newPass === null) return;
+      if (!newPass.trim()) { alert('Sandi tidak boleh kosong!'); return; }
 
-      const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
-
-      if (isSupabaseConfigured) {
-        // Update di Supabase
+      var isSupabase = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+      if (isSupabase) {
         try {
-          const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/petugas?id=eq.${id}`, {
-            method: "PATCH",
+          var res = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/petugas?id=eq.' + id, {
+            method: 'PATCH',
             headers: {
-              "apikey": CONFIG.SUPABASE_ANON_KEY,
-              "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
-              "Content-Type": "application/json"
+              'apikey': CONFIG.SUPABASE_ANON_KEY,
+              'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ password: newPassword })
+            body: JSON.stringify({ password: newPass })
           });
-
-          if (!response.ok) throw new Error("Gagal mengubah password.");
-          alert("Password petugas berhasil diubah!");
-        } catch (error) {
-          console.error(error);
-          alert("Gagal mengubah password petugas.");
-          return;
+          if (!res.ok) throw new Error('Gagal');
+          alert('Sandi berhasil diubah!');
+        } catch(err) {
+          alert('Gagal mengubah sandi di database.'); return;
         }
       } else {
-        // Update di LocalStorage
-        loadedOfficers = loadedOfficers.map(p => {
-          if (p.id === id) {
-            return { ...p, password: newPassword };
-          }
-          return p;
+        loadedOfficers = loadedOfficers.map(function(p) {
+          return p.id === id ? Object.assign({}, p, { password: newPass }) : p;
         });
-        localStorage.setItem("demo_petugas", JSON.stringify(loadedOfficers));
-        alert("Password petugas berhasil diubah secara lokal!");
+        localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
+        alert('Sandi berhasil diubah!');
       }
       loadOfficersData();
     }
 
-    // Fungsi menghapus petugas
+    // ============================
+    // HAPUS PETUGAS
+    // ============================
     async function deleteOfficer(id, name) {
-      if (!confirm(`Apakah Anda yakin ingin menghapus petugas "${name}"? Karyawan ini tidak akan muncul lagi di dropdown survei.`)) return;
+      if (!confirm('Yakin ingin menghapus petugas "' + name + '"?')) return;
 
-      const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
-
-      if (isSupabaseConfigured) {
-        // Hapus di Supabase
+      var isSupabase = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+      if (isSupabase) {
         try {
-          const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/petugas?id=eq.${id}`, {
-            method: "DELETE",
-            headers: {
-              "apikey": CONFIG.SUPABASE_ANON_KEY,
-              "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
-            }
+          var res = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/petugas?id=eq.' + id, {
+            method: 'DELETE',
+            headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
           });
-
-          if (!response.ok) throw new Error("Gagal menghapus petugas.");
-          alert("Petugas berhasil dihapus!");
-        } catch (error) {
-          console.error(error);
-          alert("Gagal menghapus petugas.");
-          return;
+          if (!res.ok) throw new Error('Gagal');
+          alert('Petugas berhasil dihapus!');
+        } catch(err) {
+          alert('Gagal menghapus petugas dari database.'); return;
         }
       } else {
-        // Hapus di LocalStorage
-        loadedOfficers = loadedOfficers.filter(p => p.id !== id);
-        localStorage.setItem("demo_petugas", JSON.stringify(loadedOfficers));
-        alert("Petugas berhasil dihapus secara lokal!");
+        loadedOfficers = loadedOfficers.filter(function(p) { return p.id !== id; });
+        localStorage.setItem('demo_petugas', JSON.stringify(loadedOfficers));
+        alert('Petugas berhasil dihapus!');
       }
       loadOfficersData();
     }
 
-    // Fungsi menghapus data lokal survei
-    window.clearData = function() {
-      if (confirm("Apakah Anda yakin ingin menghapus semua data survei lokal di browser ini?")) {
-        localStorage.removeItem("demo_survey_responses");
+    // ============================
+    // HAPUS DATA SURVEI LOKAL
+    // ============================
+    function clearData() {
+      if (confirm('Hapus semua data survei lokal? Tindakan ini tidak bisa dibatalkan.')) {
+        localStorage.removeItem('demo_survey_responses');
         loadDashboardData();
       }
-    };
+    }
 
-    // Fungsi ekspor data ke CSV
-    window.exportToCSV = function() {
-      if (loadedResponses.length === 0) {
-        alert("Tidak ada data untuk diekspor!");
-        return;
-      }
+    // ============================
+    // EKSPOR CSV
+    // ============================
+    function exportToCSV() {
+      if (loadedResponses.length === 0) { alert('Tidak ada data untuk diekspor!'); return; }
 
-      // Semicolon separated, BOM-enabled for Excel Indonesia
-      let csvContent = "Tanggal;Nama Petugas;Rating;Kategori Terkesan;Saran / Masukan\r\n";
-
-      loadedResponses.forEach(res => {
-        const cleanSaran = (res.saran || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
-        const row = [
-          res.tanggal,
-          res.petugas || "Umum",
-          res.rating,
-          res.kategori || "Tidak Memilih",
-          cleanSaran
-        ].join(";");
-        csvContent += row + "\r\n";
+      var csv = 'Tanggal;Nama Petugas;Rating;Kategori;Saran\r\n';
+      loadedResponses.forEach(function(res) {
+        var saran = (res.saran || '').replace(/;/g, ',').replace(/\r?\n/g, ' ');
+        csv += [res.tanggal, res.petugas || 'Umum', res.rating, res.kategori || '-', saran].join(';') + '\r\n';
       });
 
-      const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `Laporan_Survei_Pelanggan_${new Date().toISOString().slice(0, 10)}.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      var blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Laporan_Survei_' + new Date().toISOString().slice(0, 10) + '.csv';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   </script>
 </body>
