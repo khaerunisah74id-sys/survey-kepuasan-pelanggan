@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Admin - Survei Kepuasan Pelanggan</title>
   <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
 </head>
 <body>
 
@@ -84,22 +85,94 @@
   </div>
 
   <script>
-    // Membaca dan memproses data dari LocalStorage
-    function loadDashboardData() {
+    let loadedResponses = []; // Variabel global untuk menyimpan data survei yang sedang aktif
+
+    // ==========================================
+    // SISTEM PENGAMAN PIN ADMIN
+    // ==========================================
+    function checkAdminAccess() {
+      const pin = CONFIG.ADMIN_PIN;
+      if (pin && pin !== "") {
+        const isAuth = sessionStorage.getItem("admin_authenticated");
+        if (isAuth !== "true") {
+          const input = prompt("Masukkan PIN Keamanan Admin untuk mengakses dashboard:");
+          if (input === pin) {
+            sessionStorage.setItem("admin_authenticated", "true");
+          } else {
+            alert("PIN Salah! Akses ditolak.");
+            window.location.href = "index.html"; // Tendang kembali ke halaman survei
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    // ==========================================
+    // LOGIKA PENYAJIAN DATA DASHBOARD
+    // ==========================================
+    async function loadDashboardData() {
+      // Jalankan cek keamanan terlebih dahulu
+      if (!checkAdminAccess()) return;
+
       const responsesBody = document.getElementById("responsesBody");
       const emptyState = document.getElementById("emptyState");
       const totalRespondenEl = document.getElementById("totalResponden");
       const persenPuasEl = document.getElementById("persenPuas");
       const rataRatingEl = document.getElementById("rataRating");
+      const clearBtn = document.getElementById("clearBtn");
+      const subtitleEl = document.querySelector(".admin-title p");
 
-      // Mengambil data dari localStorage
-      const responsesData = localStorage.getItem("demo_survey_responses");
-      const responses = responsesData ? JSON.parse(responsesData) : [];
+      const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
 
-      // Update Total Responden
-      totalRespondenEl.innerText = responses.length;
+      if (isSupabaseConfigured) {
+        // MODE ONLINE: Ambil data dari Supabase
+        subtitleEl.innerHTML = `Mode Database Online: <strong style="color:var(--primary-color)">Supabase</strong>`;
+        // Sembunyikan tombol hapus data lokal karena kita menggunakan database online
+        clearBtn.style.display = "none";
+        
+        responsesBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Mengambil data dari database online...</td></tr>`;
 
-      if (responses.length === 0) {
+        try {
+          const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/survei_responses?select=*&order=created_at.desc`, {
+            method: "GET",
+            headers: {
+              "apikey": CONFIG.SUPABASE_ANON_KEY,
+              "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
+            }
+          });
+
+          if (!response.ok) throw new Error("Gagal mengambil data dari database online.");
+          
+          const data = await response.json();
+          loadedResponses = data.map(item => ({
+            tanggal: new Date(item.created_at).toLocaleString("id-ID"),
+            rating: item.rating,
+            kategori: item.kategori,
+            saran: item.saran
+          }));
+
+        } catch (error) {
+          console.error(error);
+          responsesBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Gagal memuat data dari database online. Silakan cek koneksi internet Anda.</td></tr>`;
+          return;
+        }
+      } else {
+        // MODE DEMO / LOKAL: Ambil data dari LocalStorage
+        subtitleEl.innerHTML = `Mode Demo Lokal: Menyimpan sementara di browser komputer ini`;
+        clearBtn.style.display = "inline-flex";
+
+        const responsesData = localStorage.getItem("demo_survey_responses");
+        const localData = responsesData ? JSON.parse(responsesData) : [];
+        
+        // Balikkan urutan agar data terbaru berada di atas
+        loadedResponses = [...localData].reverse();
+      }
+
+      // Update Statistik & Tampilkan ke Tabel
+      totalRespondenEl.innerText = loadedResponses.length;
+
+      if (loadedResponses.length === 0) {
         responsesBody.innerHTML = "";
         emptyState.style.display = "block";
         persenPuasEl.innerText = "0%";
@@ -110,7 +183,6 @@
       emptyState.style.display = "none";
       responsesBody.innerHTML = "";
 
-      // Nilai bobot untuk rata-rata rating
       const ratingWeights = {
         "Sangat Puas": 5,
         "Puas": 4,
@@ -122,12 +194,9 @@
       let totalRatingVal = 0;
       let countPuas = 0;
 
-      // Render tabel (dari yang terbaru di atas)
-      const reversedResponses = [...responses].reverse();
-      reversedResponses.forEach(res => {
+      loadedResponses.forEach(res => {
         const tr = document.createElement("tr");
 
-        // Rating Badge class
         let badgeClass = "badge-biasa";
         const rating = res.rating;
         
@@ -158,13 +227,12 @@
       });
 
       // Hitung Persentase Puas & Sangat Puas
-      const persenPuas = Math.round((countPuas / responses.length) * 100);
+      const persenPuas = Math.round((countPuas / loadedResponses.length) * 100);
       persenPuasEl.innerText = persenPuas + "%";
 
       // Hitung Rata-rata Rating
-      const rataRating = (totalRatingVal / responses.length).toFixed(1);
+      const rataRating = (totalRatingVal / loadedResponses.length).toFixed(1);
       
-      // Buat rating visual bintang / emoji rata-rata
       let averageEmoji = "😐";
       if (rataRating >= 4.5) averageEmoji = "🤩";
       else if (rataRating >= 3.5) averageEmoji = "🙂";
@@ -175,29 +243,24 @@
       rataRatingEl.innerHTML = `${rataRating} <span style="font-size: 20px; vertical-align: middle;">${averageEmoji}</span>`;
     }
 
-    // Fungsi menghapus semua data local
+    // Fungsi menghapus data lokal
     function clearData() {
-      if (confirm("Apakah Anda yakin ingin menghapus semua data survei lokal? Tindakan ini tidak bisa dibatalkan.")) {
+      if (confirm("Apakah Anda yakin ingin menghapus semua data survei lokal di browser ini?")) {
         localStorage.removeItem("demo_survey_responses");
         loadDashboardData();
       }
     }
 
-    // Fungsi ekspor data ke file CSV (dapat dibuka langsung di Excel)
+    // Fungsi ekspor data ke CSV
     function exportToCSV() {
-      const responsesData = localStorage.getItem("demo_survey_responses");
-      const responses = responsesData ? JSON.parse(responsesData) : [];
-
-      if (responses.length === 0) {
+      if (loadedResponses.length === 0) {
         alert("Tidak ada data untuk diekspor!");
         return;
       }
 
-      // Judul kolom CSV (Menggunakan pemisah semicolon ; agar kompatibel otomatis dengan Excel regional Indonesia/Eropa)
       let csvContent = "Tanggal;Rating;Kategori Terkesan;Saran / Masukan\r\n";
 
-      responses.forEach(res => {
-        // Membersihkan teks dari pemisah ; dan baris baru agar tidak merusak format CSV
+      loadedResponses.forEach(res => {
         const cleanSaran = (res.saran || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
         const row = [
           res.tanggal,
@@ -208,8 +271,7 @@
         csvContent += row + "\r\n";
       });
 
-      // Membuat download file di browser
-      const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" }); // \ufeff adalah BOM agar Excel membaca UTF-8 dengan benar
+      const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);

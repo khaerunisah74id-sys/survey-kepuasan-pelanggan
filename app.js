@@ -1,12 +1,5 @@
 // ==========================================
-// KONFIGURASI UTAMA
-// ==========================================
-// Tempelkan URL Web App Google Apps Script Anda di bawah ini setelah dideploy.
-// Contoh: "https://script.google.com/macros/s/AKfycbz.../exec"
-const GOOGLE_SCRIPT_URL = ""; 
-
-// ==========================================
-// LOGIKA FORM SURVEI
+// LOGIKA FORM SURVEI (Menggunakan CONFIG dari config.js)
 // ==========================================
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("surveyForm");
@@ -16,22 +9,31 @@ document.addEventListener("DOMContentLoaded", function () {
   const surveyFormCard = document.getElementById("surveyFormCard");
   const successCard = document.getElementById("successCard");
 
-  // Periksa apakah URL Google Sheets sudah dikonfigurasi
-  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "") {
+  // Jika CONFIG Supabase maupun Web3Forms belum dikonfigurasi, munculkan peringatan mode demo
+  const isSupabaseConfigured = CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY;
+  const isWeb3FormsConfigured = CONFIG.WEB3FORMS_ACCESS_KEY;
+  
+  if (!isSupabaseConfigured && !isWeb3FormsConfigured) {
     configWarning.style.display = "block";
+    configWarning.innerHTML = `
+      <strong>⚠️ Mode Demo Aktif:</strong><br>
+      Anda belum mengisi konfigurasi di file <code>config.js</code>. Survei saat ini disimpan sementara di browser Anda (LocalStorage).<br>
+      Buka file <code>config.js</code> untuk menyambungkan ke <strong>Supabase (Database)</strong> dan/atau <strong>Web3Forms (Email)</strong>.
+    `;
+  } else {
+    configWarning.style.display = "none";
   }
 
   // Handle Pengiriman Formulir
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    // Ambil data dari input
     const ratingEl = document.querySelector('input[name="rating"]:checked');
     const kategoriEl = document.querySelector('input[name="kategori"]:checked');
     const saranEl = document.getElementById("saran");
 
     if (!ratingEl) {
-      alert("Silakan pilih rating kepuasan Anda terlebih dahulu.");
+      alert("Silakan pilih tingkat kepuasan Anda.");
       return;
     }
 
@@ -43,69 +45,82 @@ document.addEventListener("DOMContentLoaded", function () {
     submitBtn.disabled = true;
     btnSpinner.style.display = "inline-block";
 
-    // Data yang akan dikirim
-    const formData = {
-      rating: rating,
-      kategori: kategori,
-      saran: saran
-    };
+    const promises = [];
 
-    if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
-      // MODE PRODUKSI: Kirim ke Google Sheets
-      
-      // Menggunakan URLSearchParams agar terkirim sebagai application/x-www-form-urlencoded
-      // Metode ini sangat kompatibel dengan Google Apps Script dan menghindari masalah CORS preflight
-      const searchParams = new URLSearchParams();
-      searchParams.append("rating", formData.rating);
-      searchParams.append("kategori", formData.kategori);
-      searchParams.append("saran", formData.saran);
-
-      fetch(GOOGLE_SCRIPT_URL, {
+    // 1. JIKA SUPABASE DIATUR -> Kirim ke Supabase
+    if (isSupabaseConfigured) {
+      const supabasePromise = fetch(`${CONFIG.SUPABASE_URL}/rest/v1/survei_responses`, {
         method: "POST",
-        mode: "no-cors", // no-cors memberi tahu browser untuk mengirim request tanpa meminta header CORS balik
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          "apikey": CONFIG.SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
         },
-        body: searchParams
-      })
-      .then(() => {
-        // Karena kita menggunakan mode "no-cors", browser tidak bisa membaca respon detailnya,
-        // namun asalkan request terkirim dengan status 200/0, itu berarti berhasil masuk ke Google Sheets.
-        showSuccessState();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Gagal mengirim data survei. Silakan periksa koneksi internet Anda.");
-        resetLoadingState();
+        body: JSON.stringify({
+          rating: rating,
+          kategori: kategori,
+          saran: saran
+        })
+      }).then(res => {
+        if (!res.ok) throw new Error("Gagal mengirim ke database Supabase");
+        return res;
       });
+      promises.push(supabasePromise);
+    }
 
+    // 2. JIKA WEB3FORMS DIATUR -> Kirim Notifikasi ke Email
+    if (isWeb3FormsConfigured) {
+      const web3FormsPromise = fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          access_key: CONFIG.WEB3FORMS_ACCESS_KEY,
+          subject: `Survei Baru: ${rating} (${kategori})`,
+          from_name: "Sistem Survei Toko",
+          message: `Ada masukan baru dari pelanggan!\n\n` +
+                   `- Tingkat Kepuasan: ${rating}\n` +
+                   `- Kategori Terkesan: ${kategori}\n` +
+                   `- Komentar/Saran: ${saran || "(Kosong)"}\n\n` +
+                   `Waktu: ${new Date().toLocaleString("id-ID")}`
+        })
+      }).then(res => {
+        if (!res.ok) throw new Error("Gagal mengirim notifikasi email");
+        return res.json();
+      });
+      promises.push(web3FormsPromise);
+    }
+
+    // Eksekusi pengiriman data
+    if (promises.length > 0) {
+      Promise.all(promises)
+        .then(() => {
+          showSuccessState();
+        })
+        .catch(error => {
+          console.error("Error detail:", error);
+          alert("Terjadi kesalahan saat mengirim data. Silakan coba lagi.");
+          resetLoadingState();
+        });
     } else {
-      // MODE DEMO: Simpan ke LocalStorage komputer (simulasi database lokal)
-      console.log("Menjalankan Mode Demo. Data survei yang dikirim:", formData);
-      
+      // 3. JIKA DUA-DUANYA KOSONG -> Simpan di LocalStorage (Mode Demo)
       setTimeout(function () {
-        // Ambil data respon yang sudah ada di localStorage (jika ada)
         let responses = localStorage.getItem("demo_survey_responses");
-        if (responses) {
-          responses = JSON.parse(responses);
-        } else {
-          responses = [];
-        }
-
-        // Tambah data baru
+        responses = responses ? JSON.parse(responses) : [];
+        
         responses.push({
           tanggal: new Date().toLocaleString("id-ID"),
-          rating: formData.rating,
-          kategori: formData.kategori,
-          saran: formData.saran
+          rating: rating,
+          kategori: kategori,
+          saran: saran
         });
 
-        // Simpan kembali
         localStorage.setItem("demo_survey_responses", JSON.stringify(responses));
-
-        // Tampilkan halaman sukses
         showSuccessState();
-      }, 1000); // Simulasi delay jaringan selama 1 detik
+      }, 1000);
     }
   });
 
@@ -121,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Fungsi untuk meriset formulir dan mengulang survei
+// Reset formulir
 window.resetSurvey = function () {
   const form = document.getElementById("surveyForm");
   const surveyFormCard = document.getElementById("surveyFormCard");
@@ -129,7 +144,6 @@ window.resetSurvey = function () {
 
   form.reset();
   
-  // Reset rating radio selection visual state
   const checkedRating = document.querySelector('input[name="rating"]:checked');
   if (checkedRating) checkedRating.checked = false;
 
