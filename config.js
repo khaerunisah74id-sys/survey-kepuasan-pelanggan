@@ -12,8 +12,9 @@ const CONFIG = {
   // Cara dapatkan KEY: Buka web3forms.com, masukkan email Anda, Anda akan dikirimi Access Key gratis
   WEB3FORMS_ACCESS_KEY: "",
 
-  // OPSI TAMBAHAN: PIN KEAMANAN DASHBOARD ADMIN
-  // PIN ini digunakan untuk masuk ke halaman admin.html agar pelanggan lain tidak bisa membuka data survei Anda.
-  // Biarkan kosong "" jika Anda tidak ingin menggunakan PIN pengaman (bebas diakses siapa saja).
-  ADMIN_PIN: "1234"
+  // OPSI TAMBAHAN: LOGIN KEAMANAN DASHBOARD ADMIN
+  // Digunakan untuk masuk ke halaman admin.html agar pelanggan lain tidak bisa membuka data survei Anda.
+  // Kosongkan ADMIN_PASSWORD: "" jika ingin masuk tanpa login.
+  ADMIN_USERNAME: "admin",
+  ADMIN_PASSWORD: "password123"
 };

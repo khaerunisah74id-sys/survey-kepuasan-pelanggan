@@ -9,7 +9,36 @@
 </head>
 <body>
 
-  <div class="admin-container">
+  <!-- Form Login Admin (Tampil pertama kali jika belum login) -->
+  <div id="loginCard" class="survey-container" style="display: none; margin: 20px auto;">
+    <div class="survey-header">
+      <div class="logo-placeholder">
+        <!-- Ikon Gembok SVG -->
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h1>Login Admin</h1>
+      <p>Masukkan username dan password admin untuk melihat data hasil survei.</p>
+    </div>
+    
+    <form id="loginForm">
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label class="form-label" style="text-align: left; margin-bottom: 8px;">Username</label>
+        <input type="text" id="usernameInput" class="form-input" placeholder="Masukkan username..." required autocomplete="username">
+      </div>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label class="form-label" style="text-align: left; margin-bottom: 8px;">Password</label>
+        <input type="password" id="passwordInput" class="form-input" placeholder="Masukkan password..." required autocomplete="current-password">
+      </div>
+      <div id="loginError" class="error-message">Username atau Password salah!</div>
+      <button type="submit" class="submit-btn" style="margin-top: 15px;">Masuk Dashboard</button>
+    </form>
+  </div>
+
+  <!-- Dashboard Laporan Admin -->
+  <div id="adminDashboard" class="admin-container" style="display: none;">
     <div class="admin-header">
       <div class="admin-title">
         <h1>Dashboard Laporan Survei</h1>
@@ -88,32 +117,62 @@
     let loadedResponses = []; // Variabel global untuk menyimpan data survei yang sedang aktif
 
     // ==========================================
-    // SISTEM PENGAMAN PIN ADMIN
+    // SISTEM KEAMANAN LOGIN ADMIN
     // ==========================================
     function checkAdminAccess() {
-      const pin = CONFIG.ADMIN_PIN;
-      if (pin && pin !== "") {
-        const isAuth = sessionStorage.getItem("admin_authenticated");
-        if (isAuth !== "true") {
-          const input = prompt("Masukkan PIN Keamanan Admin untuk mengakses dashboard:");
-          if (input === pin) {
-            sessionStorage.setItem("admin_authenticated", "true");
-          } else {
-            alert("PIN Salah! Akses ditolak.");
-            window.location.href = "index.html"; // Tendang kembali ke halaman survei
-            return false;
-          }
-        }
+      const password = CONFIG.ADMIN_PASSWORD;
+      
+      // Jika password dinonaktifkan (dikosongkan), langsung tampilkan dashboard
+      if (!password || password === "") {
+        document.getElementById("loginCard").style.display = "none";
+        document.getElementById("adminDashboard").style.display = "block";
+        loadDashboardData();
+        return;
       }
-      return true;
+
+      const isAuth = sessionStorage.getItem("admin_authenticated") === "true";
+      if (isAuth) {
+        document.getElementById("loginCard").style.display = "none";
+        document.getElementById("adminDashboard").style.display = "block";
+        loadDashboardData();
+      } else {
+        document.getElementById("adminDashboard").style.display = "none";
+        document.getElementById("loginCard").style.display = "block";
+      }
     }
+
+    // Event listener saat halaman dimuat
+    document.addEventListener("DOMContentLoaded", function () {
+      const loginForm = document.getElementById("loginForm");
+      
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        
+        const usernameInput = document.getElementById("usernameInput").value;
+        const passwordInput = document.getElementById("passwordInput").value;
+        const loginError = document.getElementById("loginError");
+
+        // Validasi kecocokan username & password
+        if (usernameInput === CONFIG.ADMIN_USERNAME && passwordInput === CONFIG.ADMIN_PASSWORD) {
+          sessionStorage.setItem("admin_authenticated", "true");
+          document.getElementById("loginCard").style.display = "none";
+          document.getElementById("adminDashboard").style.display = "block";
+          loginError.style.display = "none";
+          loadDashboardData();
+        } else {
+          loginError.style.display = "block";
+          document.getElementById("passwordInput").value = ""; // Kosongkan input password
+        }
+      });
+
+      // Jalankan cek akses masuk
+      checkAdminAccess();
+    });
 
     // ==========================================
     // LOGIKA PENYAJIAN DATA DASHBOARD
     // ==========================================
     async function loadDashboardData() {
-      // Jalankan cek keamanan terlebih dahulu
-      if (!checkAdminAccess()) return;
 
       const responsesBody = document.getElementById("responsesBody");
       const emptyState = document.getElementById("emptyState");
@@ -281,9 +340,6 @@
       link.click();
       document.body.removeChild(link);
     }
-
-    // Load data saat halaman dibuka
-    document.addEventListener("DOMContentLoaded", loadDashboardData);
   </script>
 </body>
 </html>

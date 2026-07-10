@@ -207,10 +207,10 @@ body {
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
-/* Feedback Text Area */
-.feedback-textarea {
+/* Feedback Text Area & Input Form */
+.feedback-textarea,
+.form-input {
   width: 100%;
-  min-height: 100px;
   padding: 14px 18px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-md);
@@ -218,15 +218,29 @@ body {
   font-size: 14px;
   color: var(--text-dark);
   background: rgba(255, 255, 255, 0.6);
-  resize: vertical;
   outline: none;
   transition: var(--transition);
 }
 
-.feedback-textarea:focus {
+.feedback-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.feedback-textarea:focus,
+.form-input:focus {
   background: white;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: 8px;
+  text-align: center;
+  font-weight: 500;
+  display: none;
 }
 
 /* Submit Button */
