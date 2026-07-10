@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Survei Kepuasan Pelanggan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="survey-container">
+    <!-- Status Konfigurasi: Hanya muncul jika URL Google Sheets belum diisi di app.js -->
+    <div id="configWarning" class="config-warning" style="display: none;">
+      <strong>⚠️ Perhatian (Developer/Owner):</strong><br>
+      API Google Sheets belum dikonfigurasi. Form ini berjalan dalam mode <strong>Demo (Simulasi)</strong>. 
+      Silakan atur URL Google Apps Script Anda di file <code>app.js</code> pada baris pertama untuk mengaktifkan pengiriman data asli.
+    </div>
+
+    <!-- Tampilan Form Survei -->
+    <div id="surveyFormCard">
+      <div class="survey-header">
+        <div class="logo-placeholder">
+          <!-- Ikon SVG senyum elegan -->
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        <h1 id="shopName">Survei Kepuasan Pelanggan</h1>
+        <p>Pendapat Anda sangat berharga bagi kami. Bantu kami meningkatkan layanan dengan mengisi survei singkat ini.</p>
+      </div>
+
+      <form id="surveyForm">
+        <!-- Pilihan Rating Kepuasan -->
+        <div class="form-group">
+          <label class="form-label">Bagaimana kepuasan Anda terhadap layanan kami hari ini?</label>
+          <div class="rating-grid">
+            
+            <div class="rating-item">
+              <input type="radio" name="rating" id="rate1" value="Sangat Tidak Puas" class="rating-input" required>
+              <label for="rate1" class="rating-label">
+                <span class="rating-emoji">😠</span>
+                <span class="rating-text">Sangat Kecewa</span>
+              </label>
+            </div>
+
+            <div class="rating-item">
+              <input type="radio" name="rating" id="rate2" value="Tidak Puas" class="rating-input">
+              <label for="rate2" class="rating-label">
+                <span class="rating-emoji">🙁</span>
+                <span class="rating-text">Kecewa</span>
+              </label>
+            </div>
+
+            <div class="rating-item">
+              <input type="radio" name="rating" id="rate3" value="Biasa Saja" class="rating-input">
+              <label for="rate3" class="rating-label">
+                <span class="rating-emoji">😐</span>
+                <span class="rating-text">Biasa</span>
+              </label>
+            </div>
+
+            <div class="rating-item">
+              <input type="radio" name="rating" id="rate4" value="Puas" class="rating-input">
+              <label for="rate4" class="rating-label">
+                <span class="rating-emoji">🙂</span>
+                <span class="rating-text">Puas</span>
+              </label>
+            </div>
+
+            <div class="rating-item">
+              <input type="radio" name="rating" id="rate5" value="Sangat Puas" class="rating-input">
+              <label for="rate5" class="rating-label">
+                <span class="rating-emoji">🤩</span>
+                <span class="rating-text">Sangat Puas</span>
+              </label>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pilihan Kategori Layanan -->
+        <div class="form-group">
+          <label class="form-label">Apa yang paling berkesan bagi Anda? (Opsional)</label>
+          <div class="category-container">
+            <div>
+              <input type="radio" name="kategori" id="cat1" value="Kualitas Produk" class="category-input">
+              <label for="cat1" class="category-label">Kualitas Produk</label>
+            </div>
+            <div>
+              <input type="radio" name="kategori" id="cat2" value="Kecepatan Layanan" class="category-input">
+              <label for="cat2" class="category-label">Kecepatan Layanan</label>
+            </div>
+            <div>
+              <input type="radio" name="kategori" id="cat3" value="Kebersihan Area" class="category-input">
+              <label for="cat3" class="category-label">Kebersihan Area</label>
+            </div>
+            <div>
+              <input type="radio" name="kategori" id="cat4" value="Sikap Staff/Kasir" class="category-input">
+              <label for="cat4" class="category-label">Sikap Staff / Kasir</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Saran/Komentar -->
+        <div class="form-group">
+          <label class="form-label">Ada masukan atau saran untuk kami?</label>
+          <textarea name="saran" id="saran" class="feedback-textarea" placeholder="Tulis masukan Anda di sini (opsional)..."></textarea>
+        </div>
+
+        <!-- Tombol Kirim -->
+        <button type="submit" id="submitBtn" class="submit-btn">
+          <span>Kirim Masukan</span>
+          <div class="spinner" id="btnSpinner"></div>
+        </button>
+      </form>
+    </div>
+
+    <!-- Tampilan Berhasil Kirim -->
+    <div id="successCard" class="success-card">
+      <div class="success-icon">✓</div>
+      <h2>Terima Kasih!</h2>
+      <p>Masukan Anda telah berhasil kami terima. Pendapat Anda sangat membantu kami untuk terus meningkatkan kualitas pelayanan toko kami.</p>
+      <button onclick="resetSurvey()" class="back-btn">Isi Survei Lagi</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - Survei Kepuasan Pelanggan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="admin-container">
+    <div class="admin-header">
+      <div class="admin-title">
+        <h1>Dashboard Laporan Survei</h1>
+        <p>Kelola data dan analisa tingkat kepuasan pelanggan Anda (Mode Demo Lokal)</p>
+      </div>
+      <div class="action-buttons">
+        <a href="index.html" class="btn btn-secondary">
+          <!-- Ikon SVG Panah Kiri -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Kembali ke Survei
+        </a>
+        <button id="exportBtn" class="btn btn-primary" onclick="exportToCSV()">
+          <!-- Ikon SVG Download -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Ekspor ke CSV
+        </button>
+        <button id="clearBtn" class="btn btn-danger" onclick="clearData()">
+          <!-- Ikon SVG Sampah -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          Hapus Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Ringkasan Statistik -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Responden</h3>
+        <div id="totalResponden" class="stat-val">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Puas & Sangat Puas</h3>
+        <div id="persenPuas" class="stat-val">0%</div>
+      </div>
+      <div class="stat-card">
+        <h3>Rata-rata Rating</h3>
+        <div id="rataRating" class="stat-val">-</div>
+      </div>
+    </div>
+
+    <!-- Tabel Riwayat Data -->
+    <h2 class="form-label" style="text-align: left; margin-bottom: 10px;">Riwayat Masukan Pelanggan</h2>
+    <div class="table-wrapper">
+      <table class="admin-table" id="responsesTable">
+        <thead>
+          <tr>
+            <th>Tanggal/Waktu</th>
+            <th>Tingkat Kepuasan</th>
+            <th>Kategori Terkesan</th>
+            <th>Saran / Masukan</th>
+          </tr>
+        </thead>
+        <tbody id="responsesBody">
+          <!-- Data akan dimasukkan lewat JS -->
+        </tbody>
+      </table>
+      <div id="emptyState" class="empty-state" style="display: none;">
+        Belum ada data survei yang masuk. Coba isi survei terlebih dahulu di halaman depan.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Membaca dan memproses data dari LocalStorage
+    function loadDashboardData() {
+      const responsesBody = document.getElementById("responsesBody");
+      const emptyState = document.getElementById("emptyState");
+      const totalRespondenEl = document.getElementById("totalResponden");
+      const persenPuasEl = document.getElementById("persenPuas");
+      const rataRatingEl = document.getElementById("rataRating");
+
+      // Mengambil data dari localStorage
+      const responsesData = localStorage.getItem("demo_survey_responses");
+      const responses = responsesData ? JSON.parse(responsesData) : [];
+
+      // Update Total Responden
+      totalRespondenEl.innerText = responses.length;
+
+      if (responses.length === 0) {
+        responsesBody.innerHTML = "";
+        emptyState.style.display = "block";
+        persenPuasEl.innerText = "0%";
+        rataRatingEl.innerText = "-";
+        return;
+      }
+
+      emptyState.style.display = "none";
+      responsesBody.innerHTML = "";
+
+      // Nilai bobot untuk rata-rata rating
+      const ratingWeights = {
+        "Sangat Puas": 5,
+        "Puas": 4,
+        "Biasa Saja": 3,
+        "Tidak Puas": 2,
+        "Sangat Tidak Puas": 1
+      };
+
+      let totalRatingVal = 0;
+      let countPuas = 0;
+
+      // Render tabel (dari yang terbaru di atas)
+      const reversedResponses = [...responses].reverse();
+      reversedResponses.forEach(res => {
+        const tr = document.createElement("tr");
+
+        // Rating Badge class
+        let badgeClass = "badge-biasa";
+        const rating = res.rating;
+        
+        if (rating === "Sangat Puas") {
+          badgeClass = "badge-sangat-puas";
+          countPuas++;
+        } else if (rating === "Puas") {
+          badgeClass = "badge-puas";
+          countPuas++;
+        } else if (rating === "Biasa Saja") {
+          badgeClass = "badge-biasa";
+        } else if (rating === "Tidak Puas") {
+          badgeClass = "badge-tidak-puas";
+        } else if (rating === "Sangat Tidak Puas") {
+          badgeClass = "badge-sangat-tidak-puas";
+        }
+
+        const ratingVal = ratingWeights[rating] || 0;
+        totalRatingVal += ratingVal;
+
+        tr.innerHTML = `
+          <td>${res.tanggal}</td>
+          <td><span class="rating-badge ${badgeClass}">${rating}</span></td>
+          <td>${res.kategori || 'Tidak Memilih'}</td>
+          <td>${res.saran || '-'}</td>
+        `;
+        responsesBody.appendChild(tr);
+      });
+
+      // Hitung Persentase Puas & Sangat Puas
+      const persenPuas = Math.round((countPuas / responses.length) * 100);
+      persenPuasEl.innerText = persenPuas + "%";
+
+      // Hitung Rata-rata Rating
+      const rataRating = (totalRatingVal / responses.length).toFixed(1);
+      
+      // Buat rating visual bintang / emoji rata-rata
+      let averageEmoji = "😐";
+      if (rataRating >= 4.5) averageEmoji = "🤩";
+      else if (rataRating >= 3.5) averageEmoji = "🙂";
+      else if (rataRating >= 2.5) averageEmoji = "😐";
+      else if (rataRating >= 1.5) averageEmoji = "🙁";
+      else averageEmoji = "😠";
+
+      rataRatingEl.innerHTML = `${rataRating} <span style="font-size: 20px; vertical-align: middle;">${averageEmoji}</span>`;
+    }
+
+    // Fungsi menghapus semua data local
+    function clearData() {
+      if (confirm("Apakah Anda yakin ingin menghapus semua data survei lokal? Tindakan ini tidak bisa dibatalkan.")) {
+        localStorage.removeItem("demo_survey_responses");
+        loadDashboardData();
+      }
+    }
+
+    // Fungsi ekspor data ke file CSV (dapat dibuka langsung di Excel)
+    function exportToCSV() {
+      const responsesData = localStorage.getItem("demo_survey_responses");
+      const responses = responsesData ? JSON.parse(responsesData) : [];
+
+      if (responses.length === 0) {
+        alert("Tidak ada data untuk diekspor!");
+        return;
+      }
+
+      // Judul kolom CSV (Menggunakan pemisah semicolon ; agar kompatibel otomatis dengan Excel regional Indonesia/Eropa)
+      let csvContent = "Tanggal;Rating;Kategori Terkesan;Saran / Masukan\r\n";
+
+      responses.forEach(res => {
+        // Membersihkan teks dari pemisah ; dan baris baru agar tidak merusak format CSV
+        const cleanSaran = (res.saran || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
+        const row = [
+          res.tanggal,
+          res.rating,
+          res.kategori || "Tidak Memilih",
+          cleanSaran
+        ].join(";");
+        csvContent += row + "\r\n";
+      });
+
+      // Membuat download file di browser
+      const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" }); // \ufeff adalah BOM agar Excel membaca UTF-8 dengan benar
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Laporan_Survei_Pelanggan_${new Date().toISOString().slice(0, 10)}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Load data saat halaman dibuka
+    document.addEventListener("DOMContentLoaded", loadDashboardData);
+  </script>
+</body>
+</html>
